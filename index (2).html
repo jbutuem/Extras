@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGT — Comissionamento: Modelo & Cenários</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#181618;--surface:#231F20;--surface2:#2c2829;--surface3:#3a3537;
+  --red:#ED1C24;--red-dim:rgba(237,28,36,0.12);--red-border:rgba(237,28,36,0.3);
+  --white:#FFFFFF;--cream:#E2DBCE;
+  --grey-dark:#575756;--grey-mid:#9D9D9C;--grey-light:#D0D0D0;
+  --text:#F0EDE8;--text-muted:#9D9D9C;--text-dim:#575756;
+  --green:#4ade80;--green-bg:rgba(74,222,128,0.08);--green-border:rgba(74,222,128,0.2);
+  --amber:#fbbf24;--amber-bg:rgba(251,191,36,0.08);--amber-border:rgba(251,191,36,0.2);
+  --danger:#f87171;--danger-bg:rgba(248,113,113,0.08);--danger-border:rgba(248,113,113,0.2);
+  --info:#60a5fa;--info-bg:rgba(96,165,250,0.08);--info-border:rgba(96,165,250,0.2);
+  --border:rgba(255,255,255,0.08);
+  --radius:8px;--radius-lg:12px;
+}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:13px}
+
+/* NAV */
+.nav-outer{background:var(--surface);border-bottom:2px solid var(--red);position:sticky;top:0;z-index:100}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 32px}
+.nav-logo{font-size:11px;font-weight:800;letter-spacing:3px;color:var(--red);text-transform:uppercase;padding:14px 0;margin-right:28px;white-space:nowrap;flex-shrink:0}
+.nav-btn{padding:14px 18px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s;font-family:'Montserrat',sans-serif}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--red);border-bottom-color:var(--red)}
+
+/* HERO */
+.hero{background:var(--surface);border-bottom:1px solid var(--border);padding:48px 32px 36px;max-width:1200px;margin:0 auto}
+.hero-tag{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--red);text-transform:uppercase;margin-bottom:12px}
+.hero h1{font-size:38px;font-weight:900;line-height:1.05;text-transform:uppercase;letter-spacing:-1px}
+.hero h1 span{color:var(--red)}
+.hero-sub{font-size:13px;color:var(--text-muted);margin-top:10px}
+.hero-stats{display:flex;gap:40px;margin-top:28px;padding-top:24px;border-top:1px solid var(--border);flex-wrap:wrap}
+.hs-item .hs-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+.hs-item .hs-val{font-size:22px;font-weight:900;color:var(--red);margin-top:2px}
+
+/* LAYOUT */
+.page{max-width:1200px;margin:0 auto;padding:0 32px}
+.section{display:none;padding:32px 0}
+.section.active{display:block}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--red-border)}
+h2{font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:-.3px;margin-bottom:8px}
+h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--cream);margin-bottom:12px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.card-red{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius-lg);padding:20px}
+.card-accent{background:var(--red-dim);border:1px solid var(--red-border);border-radius:var(--radius-lg);padding:20px}
+.card-green{background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius-lg);padding:16px}
+.card-amber{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--radius-lg);padding:16px}
+.card-danger{background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--radius-lg);padding:16px}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+
+/* FORMULA RAIL */
+.formula-rail{display:flex;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:24px}
+.f-block{flex:1;padding:16px 14px;background:var(--surface);border-right:1px solid var(--border)}
+.f-block:last-child{border-right:none}
+.f-op{display:flex;align-items:center;justify-content:center;padding:0 6px;font-size:22px;font-weight:500;color:var(--text-muted);background:var(--surface2);border-right:1px solid var(--border);flex-shrink:0;min-width:32px}
+.f-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:5px}
+.f-value{font-size:15px;font-weight:700}
+.f-sub{font-size:10px;color:var(--text-muted);margin-top:4px;line-height:1.4}
+.f-result{background:var(--green-bg);border-left:3px solid var(--green) !important}
+.f-result .f-label{color:var(--green)}
+.f-result .f-value{color:var(--green)}
+.f-tax{background:var(--danger-bg)}
+.f-tax .f-value{color:var(--danger)}
+.f-cost{background:var(--amber-bg)}
+.f-cost .f-value{color:var(--amber)}
+
+/* MONDAY FIELDS */
+.monday-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.mc-head{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--red);margin-bottom:10px;font-weight:700}
+.mc-field{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.mc-field:last-child{border-bottom:none}
+.mc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.mc-name{font-size:11px;font-weight:600;color:var(--text)}
+.mc-type{font-size:10px;color:var(--text-muted);margin-top:2px}
+
+/* PCT BIG */
+.pct-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
+.pct-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center}
+.pct-num{font-size:36px;font-weight:900;margin-bottom:6px}
+.pct-who{font-size:11px;font-weight:600;color:var(--text);margin-bottom:4px}
+.pct-when{font-size:10px;color:var(--text-muted);line-height:1.5}
+
+/* SCENARIOS */
+.sc-team{margin-bottom:24px}
+.sc-team-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border-radius:var(--radius) var(--radius) 0 0;border:1px solid var(--border);border-bottom:none}
+.sc-badge{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;background:var(--red);color:white;padding:3px 10px;border-radius:4px}
+.sc-name{font-size:14px;font-weight:700;color:var(--text)}
+.sc-account{font-size:11px;color:var(--text-muted)}
+.sc-table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:0 0 var(--radius-lg) var(--radius-lg);overflow:hidden}
+.sc-table th{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);background:var(--surface);padding:9px 10px;text-align:right;font-weight:500;border-bottom:1px solid var(--border)}
+.sc-table th:first-child{text-align:left}
+.sc-table td{font-size:11px;padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text)}
+.sc-table td:first-child{text-align:left;font-weight:600}
+.sc-table tr:last-child td{border-bottom:none}
+.sc-table tr.row-ok:hover td{background:rgba(255,255,255,0.02)}
+.sc-table tr.row-blocked td{background:var(--danger-bg);color:var(--danger)}
+.sc-table tr.row-inad td{background:var(--amber-bg);color:var(--amber)}
+.sc-table tr.row-sus td{background:var(--amber-bg);color:var(--amber)}
+.sc-table tr.row-total td{background:var(--surface2);font-weight:700;border-top:1px solid var(--border)}
+.tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase;font-weight:600;margin-left:6px}
+.tag-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.tag-blk{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+.tag-sus{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.tag-prod{background:var(--info-bg);color:var(--info);border:1px solid var(--info-border)}
+
+/* BLOQUEIOS */
+.block-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.bl-card{border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden}
+.bl-head{padding:11px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.bl-head.danger{background:var(--danger-bg);color:var(--danger);border-bottom:1px solid var(--danger-border)}
+.bl-head.amber{background:var(--amber-bg);color:var(--amber);border-bottom:1px solid var(--amber-border)}
+.bl-head.green{background:var(--green-bg);color:var(--green);border-bottom:1px solid var(--green-border)}
+.bl-body{padding:12px 14px;background:var(--surface)}
+.bl-row{padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-muted);line-height:1.5}
+.bl-row:last-child{border-bottom:none}
+.bl-row strong{color:var(--text);font-weight:600}
+
+/* PILARES */
+.pilar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px}
+.pilar-head{background:var(--red-dim);border-bottom:1px solid var(--red-border);padding:12px 18px;display:flex;justify-content:space-between;align-items:center}
+.pilar-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--cream)}
+.pilar-pct{font-size:20px;font-weight:900;color:var(--red)}
+.pilar-body{padding:14px 18px}
+.kpi-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.kpi-row:last-child{border-bottom:none}
+.kpi-icon{width:26px;height:26px;border-radius:50%;background:var(--red-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--red);flex-shrink:0}
+.kpi-name{font-size:11px;font-weight:700;color:var(--text)}
+.kpi-desc{font-size:10px;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.kpi-meta{font-size:10px;color:var(--red);margin-top:4px;font-weight:600}
+
+/* SCORE TABLE */
+.score-table{margin-bottom:20px}
+.score-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.score-row:last-child{border-bottom:none}
+.score-name{font-size:11px;font-weight:600;color:var(--text-muted);width:180px;flex-shrink:0}
+.score-bar-wrap{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.score-bar{height:100%;background:var(--red);border-radius:3px}
+.score-pct{font-size:13px;font-weight:800;color:var(--text);width:40px;text-align:right;flex-shrink:0}
+
+/* BONUS TABLE */
+.bonus-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}
+.bonus-row:last-child{border-bottom:none}
+.bonus-score{font-size:13px;font-weight:600;color:var(--text)}
+.bonus-sub{font-size:10px;color:var(--text-muted);margin-top:2px}
+.bonus-val{font-size:20px;font-weight:900}
+.bv-none{color:var(--text-muted)}
+.bv-half{color:var(--amber)}
+.bv-full{color:var(--green)}
+
+/* SIMULATOR */
+.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.sim-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block}
+.sim-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 13px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;outline:none;transition:border-color .2s}
+.sim-input:focus{border-color:var(--red)}
+.sim-btn{background:var(--red);color:white;border:none;border-radius:6px;padding:11px 26px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+.sim-btn:hover{opacity:.85}
+.sim-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}
+.sr-card{background:var(--surface2);border-radius:var(--radius);padding:14px;text-align:center}
+.sr-label{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:6px}
+.sr-val{font-size:20px;font-weight:900}
+.sr-val.g{color:var(--green)}
+.sr-val.a{color:var(--amber)}
+.sr-val.r{color:var(--danger)}
+.sr-sub{font-size:10px;color:var(--text-muted);margin-top:3px}
+.alert-box{border-radius:var(--radius);padding:11px 14px;font-size:11px;margin-top:12px;font-weight:500}
+.alert-green{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.alert-amber{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber)}
+.alert-red{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
+
+/* WATERFALL */
+.waterfall{margin-top:16px}
+.wf-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.wf-row:last-child{border-bottom:none;padding-top:10px;margin-top:4px}
+.wf-label{flex:1;font-size:11px;color:var(--text-muted)}
+.wf-bar-wrap{width:160px;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;flex-shrink:0}
+.wf-bar{height:100%;border-radius:3px}
+.wf-val{font-size:11px;font-weight:600;min-width:90px;text-align:right}
+.wf-row.wf-total .wf-label{font-weight:700;color:var(--text)}
+.wf-row.wf-total .wf-val{color:var(--green);font-size:13px}
+
+/* TIMELINE */
+.timeline{padding-left:24px;position:relative}
+.timeline::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:1px;background:var(--red-border)}
+.tl-item{position:relative;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-21px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.tl-head{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text)}
+.tl-body{font-size:11px;color:var(--text-muted);margin-top:4px;line-height:1.5}
+
+/* FOOTER */
+.footer{text-align:center;padding:28px 32px;border-top:1px solid var(--border);font-size:10px;color:var(--text-muted);letter-spacing:1px;margin-top:32px}
+.footer span{color:var(--red);font-weight:700}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .g2,.g3,.g4,.g5,.pct-grid,.monday-grid,.block-grid,.sim-grid,.sim-result-grid{grid-template-columns:1fr}
+  .formula-rail{flex-direction:column}
+  .f-op{padding:6px;transform:rotate(90deg)}
+  .page,.hero{padding-left:16px;padding-right:16px}
+  .hero h1{font-size:26px}
+  .nav-inner{padding:0 16px}
+  .sc-table{font-size:10px}
+  .sc-table th,.sc-table td{padding:6px 7px}
+}
+</style>
+</head>
+<body>
+
+<div class="nav-outer">
+  <div class="nav-inner">
+    <div class="nav-logo">TGT</div>
+    <button class="nav-btn active" onclick="show('formula')">Fórmula</button>
+    <button class="nav-btn" onclick="show('monday')">Monday</button>
+    <button class="nav-btn" onclick="show('times')">Times</button>
+    <button class="nav-btn" onclick="show('cenarios')">Cenários</button>
+    <button class="nav-btn" onclick="show('bloqueios')">Bloqueios</button>
+    <button class="nav-btn" onclick="show('kpis')">KPIs</button>
+    <button class="nav-btn" onclick="show('bonus')">Bônus & Score</button>
+    <button class="nav-btn" onclick="show('sim')">Simulador</button>
+    <button class="nav-btn" onclick="show('head')">Head Account</button>
+  </div>
+</div>
+
+<div style="background:var(--surface);border-bottom:1px solid var(--border)">
+<div class="hero">
+  <div class="hero-tag">TGT Studio · Documento Interno · 2026</div>
+  <h1>Política de<br><span>Comissionamento</span></h1>
+  <p class="hero-sub">Verbas extras · Accounts & Stakeholders · Fórmula baseada em margem real do Monday</p>
+  <div class="hero-stats">
+    <div class="hs-item"><div class="hs-label">Accounts T1/T3/T4/T5</div><div class="hs-val">Até 20%</div></div>
+    <div class="hs-item"><div class="hs-label">Accounts PROD</div><div class="hs-val">15%</div></div>
+    <div class="hs-item"><div class="hs-label">Amanda (coord. PROD)</div><div class="hs-val">15%</div></div>
+    <div class="hs-item"><div class="hs-label">Stakeholders (total)</div><div class="hs-val">Até 10%</div></div>
+    <div class="hs-item"><div class="hs-label">Impostos fixos</div><div class="hs-val">18%</div></div>
+    <div class="hs-item"><div class="hs-label">Pagamento</div><div class="hs-val">No caixa</div></div>
+  </div>
+</div>
+</div>
+
+<div class="page">
+
+<!-- FÓRMULA -->
+<div class="section active" id="sec-formula">
+  <div class="sec-label">Fórmula de cálculo</div>
+
+  <div class="card-accent" style="margin-bottom:20px;padding:18px 22px">
+    <h3 style="color:var(--red);font-size:12px;margin-bottom:6px">Princípio</h3>
+    <p style="font-size:13px;color:var(--text);margin:0">O comissionamento incide sobre a <strong>margem real do projeto</strong>, não sobre o faturamento bruto. Todos os componentes são registrados e medidos no Monday.com — nenhum cálculo manual.</p>
+  </div>
+
+  <div class="formula-rail">
+    <div class="f-block">
+      <div class="f-label">Budget do projeto</div>
+      <div class="f-value" style="color:var(--text)">R$ 10.000</div>
+      <div class="f-sub">Valor faturado ao cliente. Campo: "Budget (R$)" no board de extras do Monday. Preenchido pelo account ao criar o projeto.</div>
+    </div>
+    <div class="f-op">−</div>
+    <div class="f-block f-tax">
+      <div class="f-label">Impostos (18%)</div>
+      <div class="f-value">R$ 1.800</div>
+      <div class="f-sub">Alíquota fixa sobre o budget bruto. Campo "Imposto (R$)" = fórmula automática no Monday: Budget × 18%.</div>
+    </div>
+    <div class="f-op">−</div>
+    <div class="f-block f-cost">
+      <div class="f-label">Custo do time</div>
+      <div class="f-value">R$ 2.400</div>
+      <div class="f-sub">Horas registradas no TMetric × taxa interna (R$108/h geral, R$132/h PROD/Pack). Integração Make puxa para o Monday automaticamente.</div>
+    </div>
+    <div class="f-op">−</div>
+    <div class="f-block f-cost">
+      <div class="f-label">Custos diversos</div>
+      <div class="f-value">R$ 600</div>
+      <div class="f-sub">Transporte, alimentação, fornecedores externos, etc. Campo "Custos diversos (R$)" preenchido pelo account antes de fechar o projeto.</div>
+    </div>
+    <div class="f-op">=</div>
+    <div class="f-block f-result">
+      <div class="f-label">Base de comissão</div>
+      <div class="f-value">R$ 5.200</div>
+      <div class="f-sub">Fórmula automática no Monday. Os % de comissão incidem exclusivamente sobre este valor.</div>
+    </div>
+  </div>
+
+  <div class="g2" style="margin-bottom:24px">
+    <div class="card-red">
+      <h3 style="font-size:11px;margin-bottom:12px">Fontes de receita extra elegíveis</h3>
+      <ul style="list-style:none;font-size:11px;color:var(--text-muted)">
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green)">+</span>Vídeos e produções audiovisuais avulsas</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green)">+</span>Horas adicionais faturadas além do fee</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green)">+</span>Projetos avulsos / one-shots</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green)">+</span>Bonificações de gráficas parceiras</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--green)">+</span>Bônus Google Ads, Meta Ads, plataformas</li>
+        <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--green)">+</span>Qualquer receita fora do contrato mensal</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:3px solid var(--danger)">
+      <h3 style="font-size:11px;margin-bottom:12px;color:var(--danger)">Não elegível</h3>
+      <ul style="list-style:none;font-size:11px;color:var(--text-muted)">
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--danger)">−</span>Fee mensal recorrente</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--danger)">−</span>Reajustes de contrato</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--danger)">−</span>Verbas de mídia paga (gerenciamento)</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--danger)">−</span>Passagem de custos sem margem</li>
+        <li style="padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:8px"><span style="color:var(--danger)">−</span>Horas de retificação de erro interno</li>
+        <li style="padding:6px 0;display:flex;gap:8px"><span style="color:var(--danger)">−</span>Clientes onde o account não está ativo</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- MONDAY -->
+<div class="section" id="sec-monday">
+  <div class="sec-label">Campos no Monday.com — board "Extras & Projetos"</div>
+
+  <div class="card-accent" style="margin-bottom:20px;padding:16px 20px">
+    <p style="font-size:12px;color:var(--text);margin:0">Todos os dados de custo entram via Monday. O board <strong>Extras & Projetos</strong> é restrito: account preenche os campos financeiros, Make puxa o custo do time do TMetric automaticamente, e Lívia libera a comissão após confirmação no caixa.</p>
+  </div>
+
+  <div class="monday-grid">
+    <div class="mc">
+      <div class="mc-head">Dados financeiros</div>
+      <div class="mc-field"><div class="mc-dot" style="background:#378ADD"></div><div><div class="mc-name">Budget (R$)</div><div class="mc-type">Número — valor faturado ao cliente. Account preenche ao criar.</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#E24B4A"></div><div><div class="mc-name">Imposto (R$)</div><div class="mc-type">Fórmula automática: Budget × 18%</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#EF9F27"></div><div><div class="mc-name">Custo time (R$)</div><div class="mc-type">Número — puxado do TMetric via Make (horas × taxa)</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#EF9F27"></div><div><div class="mc-name">Custos diversos (R$)</div><div class="mc-type">Número — transp. + alim. + fornecedores. Account preenche.</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#1D9E75"></div><div><div class="mc-name">Base comissão (R$)</div><div class="mc-type">Fórmula: Budget − Imposto − Custo time − Custos diversos</div></div></div>
+    </div>
+    <div class="mc">
+      <div class="mc-head">Classificação do projeto</div>
+      <div class="mc-field"><div class="mc-dot" style="background:#EF9F27"></div><div><div class="mc-name">Tipo de extra</div><div class="mc-type">Dropdown: Vídeo / Horas adic. / Projeto avulso / Bonif. gráfica / Bonif. plataforma / Outro</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#EF9F27"></div><div><div class="mc-name">Impacto</div><div class="mc-type">Dropdown: Alto / Médio / Baixo</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#7F77DD"></div><div><div class="mc-name">Account responsável</div><div class="mc-type">Pessoa — define quem recebe a comissão</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#7F77DD"></div><div><div class="mc-name">Stakeholders elegíveis</div><div class="mc-type">Pessoas — definidos pelo account ANTES do início do projeto</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#378ADD"></div><div><div class="mc-name">% stake por pessoa</div><div class="mc-type">Número — como o account divide os 10% entre elegíveis</div></div></div>
+    </div>
+    <div class="mc">
+      <div class="mc-head">Status & controle</div>
+      <div class="mc-field"><div class="mc-dot" style="background:#EF9F27"></div><div><div class="mc-name">Status projeto</div><div class="mc-type">Dropdown: Em andamento / Concluído / Cancelado</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#EF9F27"></div><div><div class="mc-name">Status pagamento cliente</div><div class="mc-type">Dropdown: Aguardando / Recebido / Inadimplente (só Lívia altera)</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#D85A30"></div><div><div class="mc-name">Comissão liberada?</div><div class="mc-type">Checkbox — Lívia aprova após confirmação de entrada no caixa</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#E24B4A"></div><div><div class="mc-name">Motivo bloqueio</div><div class="mc-type">Dropdown: Nenhum / Performance / Inadimplência / Cancelamento cliente</div></div></div>
+      <div class="mc-field"><div class="mc-dot" style="background:#D4537E"></div><div><div class="mc-name">Data pagamento TGT</div><div class="mc-type">Data — preenchida por Lívia ao confirmar recebimento</div></div></div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px">Automações Make — integração TMetric → Monday</h3>
+  <div class="card" style="margin-bottom:16px">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-head">Alerta de 80% das horas contratadas</div>
+        <div class="tl-body">Quando o cliente atinge 80% das horas do fee no TMetric → Make dispara notificação no Monday para o account + Julia. Account pode negociar extra antes de estourar.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-head">Custo do time em projetos extras</div>
+        <div class="tl-body">Ao fechar um projeto extra no Monday, Make puxa do TMetric as horas registradas naquele job/cliente no período e popula o campo "Custo time (R$)" automaticamente com horas × taxa interna.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-head">Checklist quinzenal de qualidade Monday</div>
+        <div class="tl-body">A cada 15 dias Make sorteia 10 jobs e verifica campos obrigatórios (briefing, impacto, prazo, responsável). Envia relatório de score por e-mail para Julia.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-head">Alerta de inadimplência D+3</div>
+        <div class="tl-body">Fatura vence sem pagamento → alerta automático para Lívia + Julia em D+3. Em D+15, Make bloqueia abertura de novos jobs do cliente no Monday.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMES -->
+<div class="section" id="sec-times">
+  <div class="sec-label">Estrutura por time</div>
+
+  <div class="pct-grid">
+    <div class="pct-card"><div class="pct-num" style="color:var(--green)">20%</div><div class="pct-who">Account — score 9–10</div><div class="pct-when">T1 / T3 / T4 / T5 · sobre base comissão · por cliente</div></div>
+    <div class="pct-card"><div class="pct-num" style="color:var(--amber)">15%</div><div class="pct-who">Account — score 8–8,9</div><div class="pct-when">T1 / T3 / T4 / T5</div></div>
+    <div class="pct-card"><div class="pct-num" style="color:var(--text-muted)">10%</div><div class="pct-who">Account — score 7–7,9</div><div class="pct-when">T1 / T3 / T4 / T5</div></div>
+    <div class="pct-card"><div class="pct-num" style="color:var(--info)">15%</div><div class="pct-who">Account PROD + Amanda</div><div class="pct-when">Cada um · independente de score · 30% total máx.</div></div>
+    <div class="pct-card"><div class="pct-num" style="color:var(--text-muted)">10%</div><div class="pct-who">Stakeholders</div><div class="pct-when">Total coletivo · dividido pelo account entre elegíveis</div></div>
+  </div>
+
+  <div class="g2" style="margin-bottom:16px">
+    <div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <span style="background:var(--red);color:white;font-size:9px;font-weight:800;letter-spacing:2px;padding:3px 10px;border-radius:4px">T1</span>
+          <span style="font-size:14px;font-weight:700">Time 1</span>
+        </div>
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Caio</div><div style="font-size:10px;color:var(--text-muted)">Account · Kerry Inst. + Siber + Celera</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--red)">Até 20%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Marina</div><div style="font-size:10px;color:var(--text-muted)">Account · Brands (DaVinci+Junior) + Lesaffre</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--red)">Até 20%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">
+            <div><div style="font-size:12px;font-weight:700;color:var(--text-muted)">Stakeholders T1</div><div style="font-size:10px;color:var(--text-muted)">Definidos por Caio / Marina · Mateus, Camis elegíveis</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--text-muted)">Até 10%</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <span style="background:var(--red);color:white;font-size:9px;font-weight:800;letter-spacing:2px;padding:3px 10px;border-radius:4px">T3</span>
+          <span style="font-size:14px;font-weight:700">Time 3</span>
+        </div>
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Amanda</div><div style="font-size:10px;color:var(--text-muted)">Account · Performance · todos os clientes T3 + coord. PROD</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--red)">Até 20%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">
+            <div><div style="font-size:12px;font-weight:700;color:var(--text-muted)">Stakeholders T3</div><div style="font-size:10px;color:var(--text-muted)">Enzo, Mariana Spatti, Cayari, Yasmin elegíveis</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--text-muted)">Até 10%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <span style="background:var(--red);color:white;font-size:9px;font-weight:800;letter-spacing:2px;padding:3px 10px;border-radius:4px">T4</span>
+          <span style="font-size:14px;font-weight:700">Time 4</span>
+        </div>
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Luiza</div><div style="font-size:10px;color:var(--text-muted)">Account · Kerry H&T + De Marchi BR/USA + UV Line + Llev</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--red)">Até 20%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">
+            <div><div style="font-size:12px;font-weight:700;color:var(--text-muted)">Stakeholders T4</div><div style="font-size:10px;color:var(--text-muted)">Eduardo, Camis elegíveis</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--text-muted)">Até 10%</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:12px">
+        <div style="padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <span style="background:var(--red);color:white;font-size:9px;font-weight:800;letter-spacing:2px;padding:3px 10px;border-radius:4px">T5</span>
+          <span style="font-size:14px;font-weight:700">Time 5 / Packaging</span>
+        </div>
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Camilla Nazário</div><div style="font-size:10px;color:var(--text-muted)">Account · Kerry Pack + Lesaffre Pack + demais clientes de packaging</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--red)">Até 20%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0">
+            <div><div style="font-size:12px;font-weight:700;color:var(--text-muted)">Stakeholders T5</div><div style="font-size:10px;color:var(--text-muted)">Definidos por Camilla · designers de Pack elegíveis</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--text-muted)">Até 10%</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--info);border-radius:var(--radius-lg);overflow:hidden">
+        <div style="padding:12px 16px;background:var(--surface2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <span style="background:#1a3a5c;color:var(--info);font-size:9px;font-weight:800;letter-spacing:2px;padding:3px 10px;border-radius:4px">PROD</span>
+          <span style="font-size:14px;font-weight:700">Time de Produção</span>
+        </div>
+        <div style="padding:14px 16px">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Account do projeto</div><div style="font-size:10px;color:var(--text-muted)">Caio/Marina/Amanda/Luiza/Camilla — quem trouxer/gerir</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--info)">15%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)">
+            <div><div style="font-size:12px;font-weight:700">Amanda</div><div style="font-size:10px;color:var(--text-muted)">Coordenação do time PROD — recebe independente de quem é o account</div></div>
+            <div style="font-size:22px;font-weight:900;color:var(--info)">15%</div>
+          </div>
+          <div style="padding:9px 0">
+            <div style="font-size:10px;color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:6px;padding:8px 10px">Atenção: projetos PROD comprometem até 30% da base (account + Amanda). Verifique margem antes de fechar o orçamento.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CENÁRIOS -->
+<div class="section" id="sec-cenarios">
+  <div class="sec-label">Cenários reais simulados</div>
+  <div id="sc-container"></div>
+</div>
+
+<!-- BLOQUEIOS -->
+<div class="section" id="sec-bloqueios">
+  <div class="sec-label">Bloqueios automáticos — contrato & inadimplência</div>
+
+  <div class="block-grid" style="margin-bottom:20px">
+    <div class="bl-card">
+      <div class="bl-head danger">Cancelamento por performance — bloqueia comissão</div>
+      <div class="bl-body">
+        <div class="bl-row"><strong>Gatilho:</strong> campo "Motivo bloqueio" = Performance no board Status Contratos</div>
+        <div class="bl-row"><strong>Impacto:</strong> 100% da comissão bloqueada no mês do cancelamento + mês seguinte</div>
+        <div class="bl-row"><strong>O que configura performance:</strong> retrabalho crônico, perda por falha de atendimento, entrega recorrentemente ruim</div>
+        <div class="bl-row"><strong>Recuperação:</strong> somente após novo contrato ativo sob responsabilidade do account</div>
+        <div class="bl-row"><strong>Quem registra:</strong> Julia atualiza, João aprova</div>
+      </div>
+    </div>
+    <div class="bl-card">
+      <div class="bl-head amber">Inadimplência do cliente — suspende pagamento</div>
+      <div class="bl-body">
+        <div class="bl-row"><strong>Gatilho:</strong> fatura vencida há +30 dias sem acordo. Lívia é a única responsável por marcar.</div>
+        <div class="bl-row"><strong>Impacto:</strong> comissão calculada fica retida — não é perdida</div>
+        <div class="bl-row"><strong>Score:</strong> account não é penalizado no KPI por inadimplência do cliente</div>
+        <div class="bl-row"><strong>Parcelamento:</strong> liberação proporcional conforme parcelas entram no caixa</div>
+        <div class="bl-row"><strong>Exemplo:</strong> extra de R$2.000 → cliente paga 50% → account recebe R$1.000 imediatamente</div>
+      </div>
+    </div>
+    <div class="bl-card">
+      <div class="bl-head danger">Score baixo — perde ou suspende</div>
+      <div class="bl-body">
+        <div class="bl-row"><strong>Score 6,0–6,9:</strong> comissão suspensa. Acumula e paga quando score ≥ 7,0 no mês seguinte.</div>
+        <div class="bl-row"><strong>Score &lt; 6,0:</strong> sem comissão e acumulado é perdido. Reinicia no mês seguinte.</div>
+        <div class="bl-row"><strong>Zeros automáticos de score:</strong> retrabalho &gt;20%, estouro sem controle, não aplicar política de horas extras</div>
+        <div class="bl-row"><strong>-30% do bônus:</strong> Monday desatualizado (campos críticos vazios)</div>
+      </div>
+    </div>
+    <div class="bl-card">
+      <div class="bl-head green">Cancelamento sem culpa TGT — sem penalidade</div>
+      <div class="bl-body">
+        <div class="bl-row"><strong>Gatilho:</strong> Motivo = Decisão cliente / Mercado / Reestruturação interna</div>
+        <div class="bl-row"><strong>Impacto no account:</strong> nenhum. Score não é afetado.</div>
+        <div class="bl-row"><strong>Extras pendentes:</strong> pagos normalmente se já entraram no caixa</div>
+        <div class="bl-row"><strong>Importante:</strong> Julia e João devem documentar o motivo no board antes de fechar o contrato</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-bottom:14px">Calendário de apuração</h3>
+  <div class="card">
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-head">Dia 1–28 — operação</div><div class="tl-body">Accounts registram atividades, horas e projetos no Monday e TMetric. Verbas extras lançadas no board no momento da aprovação pelo cliente.</div></div>
+      <div class="tl-item"><div class="tl-head">Dia 1–5 do mês seguinte — apuração</div><div class="tl-body">Julia compila o score de cada account. Lívia apura verbas extras faturadas, confirma entradas no caixa e libera comissões no Monday (checkbox).</div></div>
+      <div class="tl-item"><div class="tl-head">Dia 5–8 — revisão</div><div class="tl-body">João revisa scores e aprova cálculos. Contestações em até 48h após comunicado.</div></div>
+      <div class="tl-item"><div class="tl-head">Dia 10 — pagamento</div><div class="tl-body">Comissões pagas somente sobre receita efetivamente no caixa até o dia 5. Valores retidos (inadimplência) liberados na apuração seguinte após confirmação.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- KPIs -->
+<div class="section" id="sec-kpis">
+  <div class="sec-label">KPIs de elegibilidade — 4 pilares</div>
+
+  <div class="card-accent" style="margin-bottom:20px;padding:16px 20px">
+    <p style="font-size:13px;color:var(--text);margin:0">Score final = média ponderada dos 4 pilares. <strong>Score ≥ 7,0</strong> é requisito mínimo para receber comissão. Medição mensal. Julia compila e comunica até o dia 5.</p>
+  </div>
+
+  <div class="pilar">
+    <div class="pilar-head"><div class="pilar-title">1. Qualidade estratégica</div><div class="pilar-pct">30%</div></div>
+    <div class="pilar-body">
+      <div class="kpi-row"><div class="kpi-icon">B</div><div><div class="kpi-name">Briefings completos</div><div class="kpi-desc">% dos jobs abertos com briefing completo (objetivo + impacto + prazo + referência)</div><div class="kpi-meta">Meta: ≥ 85% dos jobs</div></div></div>
+      <div class="kpi-row"><div class="kpi-icon">I</div><div><div class="kpi-name">Classificação de impacto</div><div class="kpi-desc">100% dos jobs com Alto/Médio/Baixo preenchido. Mínimo 20% Alto/mês.</div><div class="kpi-meta">Meta: 100% classificados · ≥ 20% Alto impacto</div></div></div>
+      <div class="kpi-row"><div class="kpi-icon">D</div><div><div class="kpi-name">Direcionamentos estratégicos</div><div class="kpi-desc">Iniciativas proativas levadas ao cliente — sugestões, alertas, oportunidades. Board separado por conta.</div><div class="kpi-meta">Meta: ≥ 3 por mês por cliente</div></div></div>
+    </div>
+  </div>
+  <div class="pilar">
+    <div class="pilar-head"><div class="pilar-title">2. Eficiência operacional</div><div class="pilar-pct">25%</div></div>
+    <div class="pilar-body">
+      <div class="kpi-row"><div class="kpi-icon">H</div><div><div class="kpi-name">Aderência de horas</div><div class="kpi-desc">% consumo vs. horas contratadas. Medido via TMetric.</div><div class="kpi-meta">90–105% Saudável · 106–120% Atenção · &gt;120% Problema · &lt;85% Subutilização</div></div></div>
+      <div class="kpi-row"><div class="kpi-icon">R</div><div><div class="kpi-name">Taxa de retrabalho</div><div class="kpi-desc">% de jobs com refação por erro interno (campo Monday). Não conta mudança de cliente.</div><div class="kpi-meta">&lt;10% Excelente · 10–20% Atenção · &gt;20% ZERA bônus</div></div></div>
+      <div class="kpi-row"><div class="kpi-icon">P</div><div><div class="kpi-name">Prazos</div><div class="kpi-desc">% de entregas realizadas dentro do prazo acordado com o cliente.</div><div class="kpi-meta">≤5% atraso Excelente · 6–10% Atenção · &gt;10% Problema</div></div></div>
+    </div>
+  </div>
+  <div class="pilar">
+    <div class="pilar-head"><div class="pilar-title">3. Rentabilidade</div><div class="pilar-pct">25%</div></div>
+    <div class="pilar-body">
+      <div class="kpi-row"><div class="kpi-icon">+</div><div><div class="kpi-name">Aplicação de horas adicionais</div><div class="kpi-desc">% extras efetivamente faturados sobre situações onde horas excederam.</div><div class="kpi-meta">10–20% da receita total Saudável · &lt;8% Perda de receita · &gt;25% Escopo ruim</div></div></div>
+      <div class="kpi-row"><div class="kpi-icon">C</div><div><div class="kpi-name">Captura de oportunidades</div><div class="kpi-desc">Verbas extras identificadas e convertidas no mês. Mínimo 1 por cliente ativo.</div><div class="kpi-meta">Meta progressiva: ≥ 1 extra/mês por cliente</div></div></div>
+    </div>
+  </div>
+  <div class="pilar">
+    <div class="pilar-head"><div class="pilar-title">4. Relação com cliente</div><div class="pilar-pct">20%</div></div>
+    <div class="pilar-body">
+      <div class="kpi-row"><div class="kpi-icon">N</div><div><div class="kpi-name">NPS / satisfação</div><div class="kpi-desc">Formulário trimestral automático via Make → Google Forms → Monday.</div><div class="kpi-meta">Meta: NPS ≥ 7 por cliente</div></div></div>
+      <div class="kpi-row"><div class="kpi-icon">R</div><div><div class="kpi-name">Tempo de resposta</div><div class="kpi-desc">Monitor de interações Make (cenário 4545607). Alerta se TGT não respondeu em 2 dias úteis.</div><div class="kpi-meta">Meta: &lt;2 dias úteis em 95% das interações</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BÔNUS & SCORE -->
+<div class="section" id="sec-bonus">
+  <div class="sec-label">Score final & tabela de comissão</div>
+
+  <div class="g2" style="margin-bottom:24px">
+    <div>
+      <h3 style="margin-bottom:14px">Composição do score</h3>
+      <div class="card">
+        <div class="score-table">
+          <div class="score-row"><div class="score-name">Qualidade Estratégica</div><div class="score-bar-wrap"><div class="score-bar" style="width:30%"></div></div><div class="score-pct">30%</div></div>
+          <div class="score-row"><div class="score-name">Eficiência Operacional</div><div class="score-bar-wrap"><div class="score-bar" style="width:25%"></div></div><div class="score-pct">25%</div></div>
+          <div class="score-row"><div class="score-name">Rentabilidade</div><div class="score-bar-wrap"><div class="score-bar" style="width:25%"></div></div><div class="score-pct">25%</div></div>
+          <div class="score-row"><div class="score-name">Relação com Cliente</div><div class="score-bar-wrap"><div class="score-bar" style="width:20%"></div></div><div class="score-pct">20%</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:14px">Comissão × score</h3>
+      <div class="card">
+        <div class="bonus-row"><div><div class="bonus-score">Score &lt; 6,0</div><div class="bonus-sub">Perde acumulado</div></div><div class="bonus-val bv-none">0%</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score 6,0–6,9</div><div class="bonus-sub">Suspenso — acumula até score ≥ 7</div></div><div class="bonus-val bv-none">0%*</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score 7,0–7,9</div><div class="bonus-sub">Elegível — comissão parcial</div></div><div class="bonus-val bv-half">10%</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score 8,0–8,9</div><div class="bonus-sub">Performance consistente</div></div><div class="bonus-val bv-half">15%</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score 9,0–10,0</div><div class="bonus-sub">Excelência — teto máximo</div></div><div class="bonus-val bv-full">20%</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIMULADOR -->
+<div class="section" id="sec-sim">
+  <div class="sec-label">Simulador interativo</div>
+  <div class="card" style="margin-bottom:8px">
+    <h3 style="font-size:11px;margin-bottom:18px">Parâmetros do projeto</h3>
+    <div class="sim-grid">
+      <div><label class="sim-label">Budget do projeto (R$)</label><input type="number" class="sim-input" id="sBudget" value="12000" oninput="simCalc()"></div>
+      <div><label class="sim-label">Custo do time (R$)</label><input type="number" class="sim-input" id="sCusto" value="2800" oninput="simCalc()"></div>
+      <div><label class="sim-label">Custos diversos (R$)</label><input type="number" class="sim-input" id="sDiverse" value="600" oninput="simCalc()"></div>
+      <div><label class="sim-label">Score do account</label>
+        <select class="sim-input" id="sScore" onchange="simCalc()">
+          <option value="0">Abaixo de 6,0 — sem comissão</option>
+          <option value="0.5">6,0–6,9 — suspenso</option>
+          <option value="0.10">7,0–7,9 — 10%</option>
+          <option value="0.15" selected>8,0–8,9 — 15%</option>
+          <option value="0.20">9,0–10 — 20%</option>
+        </select>
+      </div>
+      <div><label class="sim-label">Tipo de operação</label>
+        <select class="sim-input" id="sType" onchange="simCalc()">
+          <option value="normal">T1 / T3 / T4 / T5</option>
+          <option value="prod">PROD</option>
+        </select>
+      </div>
+      <div><label class="sim-label">Stakeholders elegíveis</label>
+        <select class="sim-input" id="sStake" onchange="simCalc()">
+          <option value="0">Nenhum</option>
+          <option value="1">1 stakeholder</option>
+          <option value="2" selected>2 stakeholders</option>
+          <option value="3">3 stakeholders</option>
+        </select>
+      </div>
+      <div><label class="sim-label">Status do contrato</label>
+        <select class="sim-input" id="sBlock" onchange="simCalc()">
+          <option value="ok">Ativo — normal</option>
+          <option value="perf">Cancelado por performance</option>
+          <option value="inad">Cliente inadimplente</option>
+        </select>
+      </div>
+    </div>
+    <div id="simResult"></div>
+  </div>
+</div>
+
+<!-- HEAD ACCOUNT -->
+<div class="section" id="sec-head">
+  <div class="sec-label">Head Account — Julia</div>
+  <div class="card-accent" style="margin-bottom:20px;padding:18px 22px">
+    <h3 style="color:var(--red);font-size:11px;margin-bottom:6px">Papel na política de comissionamento</h3>
+    <p style="font-size:13px;color:var(--text);margin:0">Julia não recebe comissão por cliente/projeto. Sua premiação é estrutural — reflete a saúde global da operação de atendimento e o crescimento de extras.</p>
+  </div>
+  <div class="g2">
+    <div>
+      <h3 style="margin-bottom:14px">KPIs de Julia</h3>
+      <div class="pilar">
+        <div class="pilar-body" style="padding:14px 18px">
+          <div class="kpi-row"><div class="kpi-icon">Q</div><div><div class="kpi-name">Score médio dos accounts</div><div class="kpi-desc">Score médio de Caio, Marina, Amanda, Luiza, Camilla ≥ 7,5 no trimestre</div></div></div>
+          <div class="kpi-row"><div class="kpi-icon">R</div><div><div class="kpi-name">Rentabilidade da operação</div><div class="kpi-desc">Estouro de horas sem aprovação ≤ 5% do total de horas faturadas no mês</div></div></div>
+          <div class="kpi-row"><div class="kpi-icon">C</div><div><div class="kpi-name">Crescimento de receita extra</div><div class="kpi-desc">Crescimento dos extras consolidados vs. mês anterior</div><div class="kpi-meta">Meta: ≥ 10% trimestral</div></div></div>
+          <div class="kpi-row"><div class="kpi-icon">E</div><div><div class="kpi-name">Evolução dos clientes</div><div class="kpi-desc">Redução de demandas baixo impacto ao longo do tempo — clientes evoluindo estrategicamente</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin-bottom:14px">Premiação sugerida — bônus trimestral sobre salário mensal base</h3>
+      <div class="card">
+        <div class="bonus-row"><div><div class="bonus-score">Score médio &lt; 7,0</div><div class="bonus-sub">Operação abaixo do esperado</div></div><div class="bonus-val bv-none">Sem bônus</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score médio 7,0–7,9</div><div class="bonus-sub">Operação básica</div></div><div class="bonus-val bv-half">+25%</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score médio 8,0–8,9</div><div class="bonus-sub">Operação consistente</div></div><div class="bonus-val bv-half">+35%</div></div>
+        <div class="bonus-row"><div><div class="bonus-score">Score médio ≥ 9,0</div><div class="bonus-sub">Excelência operacional</div></div><div class="bonus-val bv-full">+55%</div></div>
+      </div>
+      <div class="card-accent" style="margin-top:12px;padding:14px 16px">
+        <p style="font-size:11px;margin:0;color:var(--text)">Bônus adicional: se extras crescerem &gt;20% no trimestre, Julia recebe <strong>5% do crescimento incremental</strong>. Ex.: extras crescem R$20k → Julia +R$1.000.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<div class="footer">
+  <span>TGT Studio</span> · Política de Comissionamento 2026 · Documento Interno · v2.0
+</div>
+
+<script>
+const brl=v=>'R$ '+Math.round(v).toLocaleString('pt-BR');
+
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+const SCENARIOS=[
+  {team:'T1',account:'Caio',projects:[
+    {name:'Kerry — vídeo institucional',budget:8500,custo_time:900,custos_div:400,score:0.15,stake:2,block:''},
+    {name:'Kerry — horas adicionais Q2',budget:3200,custo_time:480,custos_div:0,score:0.15,stake:0,block:''},
+    {name:'Celera — pitch deck avulso',budget:2800,custo_time:420,custos_div:0,score:0.10,stake:1,block:''},
+    {name:'Kerry — bônus gráfica',budget:1500,custo_time:0,custos_div:0,score:0.15,stake:0,block:''},
+  ]},
+  {team:'T1',account:'Marina',projects:[
+    {name:'Brands — campanha DaVinci vídeo',budget:12000,custo_time:1200,custos_div:600,score:0.20,stake:3,block:''},
+    {name:'Lesaffre — material técnico extra',budget:4500,custo_time:630,custos_div:0,score:0.20,stake:1,block:''},
+    {name:'Brands — bônus Meta Ads',budget:2200,custo_time:0,custos_div:0,score:0.20,stake:0,block:''},
+  ]},
+  {team:'T3',account:'Amanda',projects:[
+    {name:'Gamer Hut — vídeo gameplay',budget:6800,custo_time:900,custos_div:300,score:0.15,stake:2,block:''},
+    {name:'Pão do Cambuí — foto produto',budget:3500,custo_time:560,custos_div:200,score:0.15,stake:1,block:''},
+    {name:'NOU — horas adic. (score suspenso)',budget:2100,custo_time:315,custos_div:0,score:0,stake:0,block:'sus'},
+    {name:'Baptistella — campanha digital',budget:5200,custo_time:780,custos_div:150,score:0.15,stake:2,block:''},
+  ]},
+  {team:'T4',account:'Luiza',projects:[
+    {name:'Kerry H&T — vídeo produção',budget:9500,custo_time:1140,custos_div:400,score:0.15,stake:2,block:''},
+    {name:'De Marchi BR — horas pack',budget:4200,custo_time:630,custos_div:0,score:0.15,stake:0,block:''},
+    {name:'UV Line — brief influencer',budget:3800,custo_time:570,custos_div:100,score:0.10,stake:1,block:''},
+    {name:'Llev — extras (cliente inadimplente)',budget:2500,custo_time:375,custos_div:0,score:0.15,stake:0,block:'inad'},
+  ]},
+  {team:'T5',account:'Camilla Nazário',projects:[
+    {name:'Kerry Pack — embalagem extra',budget:7200,custo_time:950,custos_div:350,score:0.15,stake:2,block:''},
+    {name:'Lesaffre Pack — redesign linha',budget:5800,custo_time:760,custos_div:200,score:0.20,stake:1,block:''},
+    {name:'Kerry Pack — horas adicionais',budget:2600,custo_time:390,custos_div:0,score:0.15,stake:0,block:''},
+  ]},
+  {team:'PROD',account:'Caio (account) + Amanda (coord.)',projects:[
+    {name:'Kerry — produção foto studio',budget:15000,custo_time:2100,custos_div:1200,score:'prod',stake:2,block:''},
+    {name:'De Marchi — vídeo produto',budget:22000,custo_time:2640,custos_div:2000,score:'prod',stake:3,block:''},
+    {name:'Celera — CANCELADO por performance',budget:3000,custo_time:450,custos_div:0,score:'prod',stake:0,block:'perf'},
+  ]},
+];
+
+function buildScenarios(){
+  const c=document.getElementById('sc-container');
+  let html='';
+  SCENARIOS.forEach(tm=>{
+    let tB=0,tBase=0,tAcc=0,tAmanda=0,tStake=0,tTGT=0;
+    html+=`<div class="sc-team">
+      <div class="sc-team-head">
+        <span class="sc-badge">${tm.team}</span>
+        <span class="sc-name">${tm.account}</span>
+      </div>
+      <table class="sc-table">
+        <thead><tr>
+          <th>Projeto</th><th>Budget</th><th>Impostos 18%</th><th>Custo time</th><th>Custos div.</th><th>Base comissão</th><th>Comissão account</th><th>Stakeholders</th><th>Margem TGT</th>
+        </tr></thead><tbody>`;
+    tm.projects.forEach(p=>{
+      const imp=p.budget*0.18;
+      const base=Math.max(0,p.budget-imp-p.custo_time-p.custos_div);
+      const isProd=p.score==='prod';
+      const isBlk=p.block==='perf';
+      const isInad=p.block==='inad';
+      const isSus=p.block==='sus';
+      let acc=0,amanda=0,stake=0,tgt=0,tag='',rowClass='row-ok';
+      if(isBlk){rowClass='row-blocked';tag='<span class="tag tag-blk">Bloqueado</span>';}
+      else if(isInad){rowClass='row-inad';tag='<span class="tag tag-sus">Inadimplente</span>';}
+      else if(isSus){rowClass='row-sus';tag='<span class="tag tag-sus">Score suspenso</span>';}
+      else if(isProd){acc=base*0.15;amanda=base*0.15;tag='<span class="tag tag-prod">PROD</span>';}
+      else{acc=base*p.score;tag='<span class="tag tag-ok">OK</span>';}
+      if(!isBlk&&!isSus&&p.stake>0)stake=base*0.10;
+      tgt=base-acc-amanda-stake;
+      tB+=p.budget;tBase+=base;tAcc+=acc;tAmanda+=amanda;tStake+=stake;tTGT+=tgt;
+      const accTxt=isProd?`${brl(acc)} <small style="color:#60a5fa">+${brl(amanda)} Amanda</small>`:
+                   (isBlk||isSus?'<span style="color:var(--danger)">—</span>':brl(acc));
+      html+=`<tr class="${rowClass}">
+        <td>${p.name}${tag}</td>
+        <td>${brl(p.budget)}</td>
+        <td style="color:var(--danger)">(${brl(imp)})</td>
+        <td style="color:var(--amber)">(${brl(p.custo_time)})</td>
+        <td style="color:var(--amber)">(${brl(p.custos_div)})</td>
+        <td style="font-weight:700">${brl(base)}</td>
+        <td style="color:var(--green)">${accTxt}</td>
+        <td>${stake>0?brl(stake):'—'}</td>
+        <td style="color:var(--green);font-weight:700">${brl(tgt)}</td>
+      </tr>`;
+    });
+    const mp=tB>0?Math.round(tTGT/tB*100):0;
+    html+=`<tr class="row-total">
+      <td>Subtotal ${tm.team}</td><td>${brl(tB)}</td><td></td><td></td><td></td>
+      <td>${brl(tBase)}</td>
+      <td style="color:var(--green)">${brl(tAcc)}${tAmanda>0?` <small style="color:#60a5fa">+${brl(tAmanda)}</small>`:''}</td>
+      <td>${brl(tStake)}</td>
+      <td style="color:var(--green)">${brl(tTGT)} <small style="color:var(--text-muted)">(${mp}% bruto)</small></td>
+    </tr>`;
+    html+='</tbody></table></div>';
+  });
+  c.innerHTML=html;
+}
+
+function simCalc(){
+  const budget=parseFloat(document.getElementById('sBudget').value)||0;
+  const custo=parseFloat(document.getElementById('sCusto').value)||0;
+  const diverse=parseFloat(document.getElementById('sDiverse').value)||0;
+  const scorePct=parseFloat(document.getElementById('sScore').value);
+  const type=document.getElementById('sType').value;
+  const nStake=parseInt(document.getElementById('sStake').value);
+  const block=document.getElementById('sBlock').value;
+  const imp=budget*0.18;
+  const base=Math.max(0,budget-imp-custo-diverse);
+  let acc=0,amanda=0,stake=0,tgt=0,alertHtml='';
+  if(block==='perf'){
+    alertHtml=`<div class="alert-box alert-red">Cancelamento por performance: comissão 100% bloqueada neste mês e no próximo.</div>`;
+    tgt=base;
+  } else if(block==='inad'){
+    const rawAcc=type==='prod'?base*0.15:(scorePct>0.5?base*scorePct:0);
+    stake=nStake>0?base*0.10:0;
+    alertHtml=`<div class="alert-box alert-amber">Cliente inadimplente: comissão calculada em ${brl(rawAcc+stake)} fica retida até entrada no caixa. Não é perdida.</div>`;
+    tgt=base;
+  } else if(scorePct===0){
+    alertHtml=`<div class="alert-box alert-red">Score abaixo de 6,0: sem comissão. Acumulado perdido.</div>`;
+    tgt=base;
+  } else if(scorePct===0.5){
+    alertHtml=`<div class="alert-box alert-amber">Score 6–6,9: comissão suspensa. Valor acumulado e pago quando score ≥ 7,0.</div>`;
+    tgt=base;
+  } else {
+    if(type==='prod'){acc=base*0.15;amanda=base*0.15;}
+    else{acc=base*scorePct;}
+    stake=nStake>0?base*0.10:0;
+    tgt=base-acc-amanda-stake;
+    const totalPct=Math.round((acc+amanda+stake)/base*100);
+    if(tgt/base<0.5) alertHtml=`<div class="alert-box alert-amber">Atenção: ${totalPct}% da base de comissão vai para comissionamento. Verifique margem.</div>`;
+    else alertHtml=`<div class="alert-box alert-green">Distribuição saudável. TGT retém ${Math.round(tgt/base*100)}% da base de comissão.</div>`;
+  }
+
+  const wf=[
+    {l:'Budget bruto',v:budget,color:'var(--text)',bar:'#9D9D9C',w:100},
+    {l:'(−) Impostos 18%',v:-imp,color:'var(--danger)',bar:'#f87171',w:Math.round(imp/budget*100)},
+    {l:'(−) Custo do time',v:-custo,color:'var(--amber)',bar:'#fbbf24',w:Math.round(custo/budget*100)},
+    {l:'(−) Custos diversos',v:-diverse,color:'var(--amber)',bar:'#fbbf24',w:Math.round(diverse/budget*100)},
+    {l:'= Base de comissão',v:base,color:'var(--info)',bar:'#60a5fa',w:Math.round(base/budget*100),bold:true},
+  ];
+  if(block==='ok'&&scorePct>0.5){
+    if(acc>0)wf.push({l:`(−) Comissão account`,v:-acc,color:'var(--green)',bar:'#4ade80',w:Math.round(acc/budget*100)});
+    if(amanda>0)wf.push({l:'(−) Comissão Amanda (PROD)',v:-amanda,color:'#60a5fa',bar:'#60a5fa',w:Math.round(amanda/budget*100)});
+    if(stake>0)wf.push({l:'(−) Comissão stakeholders',v:-stake,color:'var(--text-muted)',bar:'#575756',w:Math.round(stake/budget*100)});
+    wf.push({l:'= Margem TGT',v:tgt,color:'var(--green)',bar:'#4ade80',w:Math.round(tgt/budget*100),bold:true,big:true});
+  }
+  let wfHtml='<div class="waterfall">';
+  wf.forEach(d=>{
+    wfHtml+=`<div class="wf-row${d.bold?' wf-total':''}">
+      <div class="wf-label" style="color:${d.color}">${d.l}</div>
+      <div class="wf-bar-wrap"><div class="wf-bar" style="width:${d.w}%;background:${d.bar}"></div></div>
+      <div class="wf-val" style="color:${d.v<0?'var(--danger)':d.bold?'var(--green)':'var(--text)'};${d.big?'font-size:16px':''}">${d.v<0?'('+brl(Math.abs(d.v))+')':brl(d.v)}</div>
+    </div>`;
+  });
+  wfHtml+='</div>';
+
+  document.getElementById('simResult').innerHTML=`
+    <div class="sim-result-grid">
+      <div class="sr-card"><div class="sr-label">Base comissão</div><div class="sr-val">${brl(base)}</div><div class="sr-sub">${Math.round(base/budget*100)}% do budget</div></div>
+      <div class="sr-card"><div class="sr-label">Comissão account</div><div class="sr-val g">${brl(acc)}${amanda>0?'<div style="font-size:11px;color:#60a5fa">+'+brl(amanda)+' Amanda</div>':''}</div><div class="sr-sub">${type==='prod'?'15% PROD':Math.round(scorePct*100)+'% score'}</div></div>
+      <div class="sr-card"><div class="sr-label">Stakeholders total</div><div class="sr-val">${nStake>0?brl(stake):'—'}</div><div class="sr-sub">${nStake>0?brl(stake/nStake)+'/pessoa':''}</div></div>
+      <div class="sr-card"><div class="sr-label">Margem TGT</div><div class="sr-val g">${brl(tgt)}</div><div class="sr-sub">${Math.round(tgt/budget*100)}% do budget</div></div>
+    </div>
+    ${alertHtml}
+    ${wfHtml}
+  `;
+}
+
+buildScenarios();
+simCalc();
+</script>
+</body>
+</html>
