@@ -535,8 +535,7 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
 </div>
 
 <script>
-const MONDAY_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjYzODU1NzY3OCwiYWFpIjoxMSwidWlkIjo0MzE2OTUwOSwiaWFkIjoiMjAyNi0wMy0yN1QwOTo1Mzo0Ny4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MTY4NjczMjAsInJnbiI6InVzZTEifQ.Rcm5SgNkiGizjRY_z1ECf7jCEGC2j_UGqtX2h_NkTAw';
-const MONDAY_PROXY = 'https://corsproxy.io/?url=https://api.monday.com/v2';
+const MONDAY_PROXY = '/api/monday';
 const BOARD_ID = 18408140037;
 
 const USERS = {
@@ -681,11 +680,7 @@ async function submitExtra(){
   try{
     const res=await fetch(MONDAY_PROXY,{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization': MONDAY_TOKEN,
-        'API-Version': '2024-01'
-      },
+      headers:{'Content-Type':'application/json'},
       body: gqlBody
     });
     const data=await res.json();
