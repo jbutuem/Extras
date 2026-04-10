@@ -535,8 +535,7 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
 </div>
 
 <script>
-const MONDAY_TOKEN = 'COLE_SEU_TOKEN_AQUI';
-const BOARD_ID = '18408140037';
+const MAKE_WEBHOOK = 'https://hook.us2.make.com/f8udalcn1tphq9ums02x2aoxgx79r0lm';
 
 const USERS = {
   Caio:    {pass:'CCCA235', team:'T1 · Kerry + Siber + Celera',    initials:'CA'},
@@ -662,24 +661,26 @@ async function submitExtra(){
   const tgt=base-acc-amanda-stakeVal;
   const btn=document.getElementById('sub-btn');
   btn.disabled=true; showToast('Enviando para o Monday...','load');
-  const cv={
-    "dropdown_mm29m4w6":me.name,"text_mm29nem0":cliente,"dropdown_mm299dwb":tipo,
-    "color_mm29r024":{"label":impacto},"numeric_mm29gd14":b,"numeric_mm293aw7":ct,
-    "numeric_mm29457g":cd,"numeric_mm29v6ms":Math.round(base),"numeric_mm29ht36":Math.round(acc),
-    "text_mm29t49x":stake||(op==='prod'?'Amanda (coord. PROD)':'—'),
-    "numeric_mm29zmyy":Math.round(op==='prod'?amanda:stakeVal),"numeric_mm29xf9":Math.round(tgt),
-    "color_mm29x4bs":{"label":"Aguardando"},"color_mm292nn":{"label":"Nenhum"}
+  const iName=`${me.name} · ${cliente} · ${nome}`;
+  const payload={
+    itemName: iName,
+    account: me.name,
+    cliente, tipo, impacto,
+    budget: b, custoTime: ct, custoDiv: cd,
+    base: Math.round(base), acc: Math.round(acc),
+    stake: stake||(op==='prod'?'Amanda (coord. PROD)':'—'),
+    stakeVal: Math.round(op==='prod'?amanda:stakeVal),
+    tgt: Math.round(tgt)
   };
-  const iName=`${me.name} · ${cliente} · ${nome}`.replace(/"/g,'\\"');
   try{
-    const res=await fetch('https://api.monday.com/v2',{
+    const res=await fetch(MAKE_WEBHOOK,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':MONDAY_TOKEN,'API-Version':'2024-01'},
-      body:JSON.stringify({query:`mutation{create_item(board_id:${BOARD_ID},item_name:"${iName}",column_values:${JSON.stringify(JSON.stringify(cv))}){id}}`})
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
     });
     const data=await res.json();
-    if(data.errors||!data.data?.create_item?.id) throw new Error(data.errors?.[0]?.message||'Erro');
-    const mid=data.data.create_item.id;
+    if(!data.success) throw new Error('Make retornou erro');
+    const mid=data.itemId;
     const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
     if(!hist[me.name]) hist[me.name]=[];
     hist[me.name].unshift(entry);
