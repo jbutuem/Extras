@@ -195,6 +195,7 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
       <option value="Luiza">Luiza — T4</option>
       <option value="Camilla">Camilla — T5 / Packaging</option>
       <option value="Julia">Julia — Head Account</option>
+      <optgroup label="Administração"><option value="JuliaADM">Julia ADM — Gestão</option><option value="TGTADM">TGT ADM — Gestão</option></optgroup>
     </select>
     <label class="fl">Senha</label>
     <input class="fi" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
@@ -221,6 +222,7 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
     <button class="tab-btn" onclick="showTab('historico',this)">Histórico</button>
     <button class="tab-btn" onclick="showTab('score',this)">Score</button>
     <button class="tab-btn" onclick="showTab('politica',this)">Política</button>
+    <button class="tab-btn" id="tab-gestao" style="display:none" onclick="showTab('gestao',this)">Gestão ADM</button>
   </div>
   <div class="main">
 
@@ -438,7 +440,96 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
           <div style="padding:10px 14px;font-size:10px;color:var(--text-muted)">% sobre salário mensal base · bônus trimestral</div>
         </div></div>
       </div>
+
     </div><!-- /pane-politica -->
+
+    <!-- GESTÃO ADM -->
+    <div class="tab-pane" id="pane-gestao">
+      <div class="sec-label">Painel de gestão</div>
+
+      <!-- FILTERS -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;align-items:end">
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Account</div>
+            <select class="fi-inp" id="gf-account" onchange="renderGestao()">
+              <option value="">Todos</option>
+              <option>Caio</option><option>Marina</option><option>Amanda</option><option>Luiza</option><option>Camilla</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Cliente</div>
+            <select class="fi-inp" id="gf-cliente" onchange="renderGestao()">
+              <option value="">Todos</option>
+              <option>Kerry Institucional</option><option>Celera</option><option>Siber</option>
+              <option>Brands (DaVinci+Junior)</option><option>Lesaffre</option>
+              <option>Gamer Hut</option><option>Pão do Cambuí</option><option>Baptistella</option><option>NOU / Empório do Nono</option>
+              <option>Kerry H&T</option><option>De Marchi BR</option><option>De Marchi USA</option><option>UV Line</option><option>Llev</option>
+              <option>Kerry Packaging</option><option>Lesaffre Packaging</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Tipo</div>
+            <select class="fi-inp" id="gf-tipo" onchange="renderGestao()">
+              <option value="">Todos</option>
+              <option>Vídeo / Audiovisual</option><option>Horas adicionais</option><option>Projeto avulso</option>
+              <option>Bonificação gráfica</option><option>Bonificação plataforma (Google/Meta)</option>
+              <option>Campanha emergencial</option><option>Outro</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Impacto</div>
+            <select class="fi-inp" id="gf-impacto" onchange="renderGestao()">
+              <option value="">Todos</option><option>Alto</option><option>Médio</option><option>Baixo</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Período</div>
+            <select class="fi-inp" id="gf-periodo" onchange="renderGestao()">
+              <option value="">Tudo</option>
+              <option value="01/2026">Jan 2026</option><option value="02/2026">Fev 2026</option>
+              <option value="03/2026">Mar 2026</option><option value="04/2026">Abr 2026</option>
+              <option value="05/2026">Mai 2026</option><option value="06/2026">Jun 2026</option>
+            </select>
+          </div>
+          <button class="sub-btn" style="padding:10px 16px;font-size:9px" onclick="clearFilters()">Limpar</button>
+        </div>
+      </div>
+
+      <!-- KPI CARDS -->
+      <div id="gestao-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px"></div>
+
+      <!-- CHART: por account -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:14px">Comissão por account</div>
+          <div id="chart-account"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:14px">Budget por cliente</div>
+          <div id="chart-cliente"></div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700">Todos os lançamentos</div>
+          <div id="gestao-count" style="font-size:10px;color:var(--text-muted)"></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr id="gestao-thead" style="background:var(--surface2)"></tr>
+            </thead>
+            <tbody id="gestao-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TOTALS -->
+      <div id="gestao-totals" style="margin-top:14px"></div>
+    </div><!-- /pane-gestao -->
 
   </div>
 </div>
@@ -453,7 +544,9 @@ const USERS = {
   Amanda:  {pass:'AMDT563', team:'T3 · Performance + coord. PROD',  initials:'AM'},
   Luiza:   {pass:'LUIZ921', team:'T4 · Kerry H&T + De Marchi + UV', initials:'LU'},
   Camilla: {pass:'CAMP418', team:'T5 · Packaging',                  initials:'CN'},
-  Julia:   {pass:'JULA736', team:'Head Account',                    initials:'JU'},
+  Julia:   {pass:'JULA736', team:'Head Account',                    initials:'JU', admin:false},
+  JuliaADM:{pass:'JADM901', team:'Gestão · Head Account ADM',       initials:'JA', admin:true},
+  TGTADM:  {pass:'TGTA007', team:'Gestão · TGT Administração',      initials:'AD', admin:true},
 };
 
 const SCORE_DATA = {
@@ -486,6 +579,9 @@ function doLogin(){
   document.getElementById('tb-name').textContent = me.name;
   document.getElementById('tb-team').textContent = me.team;
   calcPrev(); renderHist(); renderScore();
+  const tabG = document.getElementById('tab-gestao');
+  if(me.admin){ tabG.style.display='block'; showTab('gestao', tabG); }
+  else { tabG.style.display='none'; }
 }
 
 function doLogout(){
@@ -507,6 +603,7 @@ function showTab(id, btn){
   btn.classList.add('active');
   if(id==='historico') renderHist();
   if(id==='score') renderScore();
+  if(id==='gestao') renderGestao();
 }
 
 function scorePct(s){ return s>=9?.20:s>=8?.15:s>=7?.10:0 }
@@ -666,6 +763,144 @@ function renderScore(){
       }).join('')}
     </div>`;
 }
+
+function getAllEntries(){
+  const all = [];
+  Object.values(hist).forEach(arr => all.push(...arr));
+  return all;
+}
+
+function clearFilters(){
+  ['gf-account','gf-cliente','gf-tipo','gf-impacto','gf-periodo'].forEach(id=>{
+    document.getElementById(id).selectedIndex=0;
+  });
+  renderGestao();
+}
+
+function renderGestao(){
+  const fAcc = document.getElementById('gf-account')?.value||'';
+  const fCli = document.getElementById('gf-cliente')?.value||'';
+  const fTip = document.getElementById('gf-tipo')?.value||'';
+  const fImp = document.getElementById('gf-impacto')?.value||'';
+  const fPer = document.getElementById('gf-periodo')?.value||'';
+
+  let entries = getAllEntries();
+
+  // apply filters
+  if(fAcc) entries = entries.filter(e=>e.account===fAcc);
+  if(fCli) entries = entries.filter(e=>e.cliente===fCli);
+  if(fTip) entries = entries.filter(e=>e.tipo===fTip);
+  if(fImp) entries = entries.filter(e=>e.impacto===fImp);
+  if(fPer) entries = entries.filter(e=>{
+    if(!e.date) return false;
+    const parts = e.date.split('/');
+    return (parts[1]+'/'+parts[2]) === fPer || e.date.includes(fPer.split('/')[0]+'/'+fPer.split('/')[1]);
+  });
+
+  // KPI totals
+  const totBudget = entries.reduce((s,e)=>s+(e.b||0),0);
+  const totBase   = entries.reduce((s,e)=>s+(e.base||0),0);
+  const totAcc    = entries.reduce((s,e)=>s+(e.acc||0),0);
+  const totStake  = entries.reduce((s,e)=>s+(e.stakeVal||0),0);
+  const totTgt    = entries.reduce((s,e)=>s+(e.tgt||0),0);
+
+  document.getElementById('gestao-kpis').innerHTML = [
+    {l:'Budget total',v:brl(totBudget),s:''},
+    {l:'Base de comissão',v:brl(totBase),s:totBudget>0?Math.round(totBase/totBudget*100)+'% do budget':''},
+    {l:'Comissão accounts',v:brl(totAcc),c:'var(--green)',s:totBase>0?Math.round(totAcc/totBase*100)+'% da base':''},
+    {l:'Comissão stakeholders',v:brl(totStake),s:''},
+    {l:'Margem TGT',v:brl(totTgt),c:'var(--green)',s:totBudget>0?Math.round(totTgt/totBudget*100)+'% do budget':''},
+  ].map(k=>`
+    <div style="background:var(--surface2);border-radius:var(--rl);padding:14px;text-align:center">
+      <div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">${k.l}</div>
+      <div style="font-size:16px;font-weight:900;color:${k.c||'var(--text)'};">${k.v}</div>
+      ${k.s?`<div style="font-size:9px;color:var(--text-muted);margin-top:2px">${k.s}</div>`:''}
+    </div>`).join('');
+
+  // Chart by account
+  const byAcc = {};
+  entries.forEach(e=>{ byAcc[e.account]=(byAcc[e.account]||0)+(e.acc||0); });
+  const maxAcc = Math.max(...Object.values(byAcc),1);
+  const accColors = {Caio:'#ED1C24',Marina:'#f87171',Amanda:'#60a5fa',Luiza:'#4ade80',Camilla:'#fbbf24'};
+  document.getElementById('chart-account').innerHTML = Object.entries(byAcc).sort((a,b)=>b[1]-a[1]).map(([name,val])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:80px;font-size:11px;font-weight:600;color:var(--text);flex-shrink:0">${name}</div>
+      <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(val/maxAcc*100)}%;background:${accColors[name]||'#ED1C24'};border-radius:4px"></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);min-width:80px;text-align:right">${brl(val)}</div>
+    </div>`).join('') || '<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Sem dados</div>';
+
+  // Chart by client
+  const byCli = {};
+  entries.forEach(e=>{ byCli[e.cliente]=(byCli[e.cliente]||0)+(e.b||0); });
+  const maxCli = Math.max(...Object.values(byCli),1);
+  document.getElementById('chart-cliente').innerHTML = Object.entries(byCli).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name,val])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:120px;font-size:10px;font-weight:600;color:var(--text);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
+      <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(val/maxCli*100)}%;background:#60a5fa;border-radius:4px"></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);min-width:72px;text-align:right">${brl(val)}</div>
+    </div>`).join('') || '<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Sem dados</div>';
+
+  // Table
+  const ths = ['Projeto','Account','Cliente','Tipo','Impacto','Data','Budget','Base','Comissão','Stake','Margem TGT','Monday #'];
+  document.getElementById('gestao-thead').innerHTML = ths.map(h=>
+    `<th style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:9px 10px;text-align:right;font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`
+  ).join('').replace('<th style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:9px 10px;text-align:right;font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap">Projeto</th>',
+    '<th style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:9px 10px;text-align:left;font-weight:500;border-bottom:1px solid var(--border)">Projeto</th>');
+
+  document.getElementById('gestao-count').textContent = entries.length + ' lançamento(s)';
+
+  if(!entries.length){
+    document.getElementById('gestao-tbody').innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text-muted);font-size:12px">Nenhum lançamento com esses filtros</td></tr>';
+  } else {
+    const impCol = {Alto:'var(--danger)',Médio:'var(--amber)',Baixo:'var(--text-muted)'};
+    document.getElementById('gestao-tbody').innerHTML = entries.map((e,i)=>`
+      <tr style="border-bottom:1px solid var(--border);${i%2===0?'background:rgba(255,255,255,0.01)':''}">
+        <td style="font-size:11px;padding:9px 10px;font-weight:600;color:var(--text)">${e.nome||'—'}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-muted)">${e.account}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--info)">${e.cliente}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-muted)">${e.tipo}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:${impCol[e.impacto]||'var(--text-muted)'};">${e.impacto}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-muted)">${e.date||'—'}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;font-weight:600">${brl(e.b)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right">${brl(e.base)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--green);font-weight:700">${brl(e.acc)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right">${brl(e.stakeVal||0)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--green);font-weight:700">${brl(e.tgt)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-dim)">${e.id||'—'}</td>
+      </tr>`).join('');
+  }
+
+  // Totals row by account
+  const accs = ['Caio','Marina','Amanda','Luiza','Camilla'];
+  const totals = accs.map(a=>{
+    const ae = entries.filter(e=>e.account===a);
+    return {a, b:ae.reduce((s,e)=>s+(e.b||0),0), acc:ae.reduce((s,e)=>s+(e.acc||0),0), tgt:ae.reduce((s,e)=>s+(e.tgt||0),0), n:ae.length};
+  }).filter(t=>t.n>0);
+
+  if(totals.length>1){
+    document.getElementById('gestao-totals').innerHTML = `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:12px">Resumo por account</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+          ${totals.map(t=>`
+            <div style="background:var(--surface2);border-radius:var(--r);padding:12px;border-left:3px solid ${accColors[t.a]||'#ED1C24'}">
+              <div style="font-size:11px;font-weight:800;color:var(--text);margin-bottom:6px">${t.a}</div>
+              <div style="font-size:10px;color:var(--text-muted)">Budget: <span style="color:var(--text);font-weight:600">${brl(t.b)}</span></div>
+              <div style="font-size:10px;color:var(--text-muted)">Comissão: <span style="color:var(--green);font-weight:700">${brl(t.acc)}</span></div>
+              <div style="font-size:10px;color:var(--text-muted)">Margem TGT: <span style="color:var(--green);font-weight:700">${brl(t.tgt)}</span></div>
+              <div style="font-size:9px;color:var(--text-dim);margin-top:4px">${t.n} projeto(s)</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    document.getElementById('gestao-totals').innerHTML='';
+  }
+}
+
 </script>
 </body>
 </html>
