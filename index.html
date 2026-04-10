@@ -678,9 +678,14 @@ async function submitExtra(){
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
-    const data=await res.json();
-    if(!data.success) throw new Error('Make retornou erro');
-    const mid=data.itemId;
+    const raw=await res.text();
+    let data={success:false,itemId:null};
+    try{ data=JSON.parse(raw); }catch(e){
+      if(res.ok){ data={success:true,itemId:'—'}; }
+      else{ throw new Error('Make: '+raw.substring(0,120)); }
+    }
+    if(!data.success && !res.ok) throw new Error('Make retornou erro');
+    const mid=data.itemId||'—';
     const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
     if(!hist[me.name]) hist[me.name]=[];
     hist[me.name].unshift(entry);
