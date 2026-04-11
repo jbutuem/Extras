@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TGT — Extras & Comissionamento</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#181618;--surface:#231F20;--surface2:#2c2829;--surface3:#3a3537;
+  --red:#ED1C24;--red-dim:rgba(237,28,36,0.12);--red-border:rgba(237,28,36,0.3);
+  --text:#F0EDE8;--text-muted:#9D9D9C;--text-dim:#575756;
+  --green:#4ade80;--green-bg:rgba(74,222,128,0.08);--green-border:rgba(74,222,128,0.2);
+  --amber:#fbbf24;--amber-bg:rgba(251,191,36,0.08);--amber-border:rgba(251,191,36,0.2);
+  --danger:#f87171;--danger-bg:rgba(248,113,113,0.08);--danger-border:rgba(248,113,113,0.2);
+  --info:#60a5fa;--info-bg:rgba(96,165,250,0.08);--info-border:rgba(96,165,250,0.2);
+  --border:rgba(255,255,255,0.08);--r:8px;--rl:12px;
+}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:100%;max-width:360px}
+.login-logo{font-size:10px;font-weight:800;letter-spacing:4px;color:var(--red);text-transform:uppercase;margin-bottom:28px;display:flex;align-items:center;gap:10px}
+.login-logo::after{content:'';flex:1;height:1px;background:var(--red-border)}
+.login-title{font-size:30px;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:4px}
+.login-title span{color:var(--red)}
+.login-sub{font-size:11px;color:var(--text-muted);margin-bottom:26px}
+.fl{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block}
+.fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:500;outline:none;transition:border-color .2s;margin-bottom:14px;appearance:none}
+.fi:focus{border-color:var(--red)}
+select.fi{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239D9D9C'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+.fi::placeholder{color:var(--text-dim)}
+.login-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--r);padding:13px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+.login-btn:hover{opacity:.85}
+.login-err{background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--r);padding:10px 12px;font-size:11px;color:var(--danger);margin-top:12px;display:none}
+#app-screen{display:none;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:2px solid var(--red);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:200}
+.tb-left{display:flex;align-items:center;gap:14px}
+.tb-logo{font-size:10px;font-weight:800;letter-spacing:3px;color:var(--red);text-transform:uppercase}
+.tb-sep{width:1px;height:20px;background:var(--border)}
+.tb-av{width:28px;height:28px;border-radius:50%;background:var(--red-dim);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red)}
+.tb-name{font-size:11px;font-weight:700}
+.tb-team{font-size:9px;color:var(--text-muted)}
+.logout-btn{font-size:9px;color:var(--text-muted);background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-family:'Montserrat',sans-serif;padding:5px 10px;transition:all .2s}
+.logout-btn:hover{color:var(--danger);border-color:var(--danger-border)}
+.tab-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:0;overflow-x:auto}
+.tab-btn{padding:13px 18px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;font-family:'Montserrat',sans-serif;transition:color .2s,border-color .2s;white-space:nowrap}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red)}
+.main{max-width:880px;margin:0 auto;padding:28px 20px}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+.sec-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--red-border)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:20px}
+.fg-full{grid-column:1/-1}
+.fi-label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block}
+.fi-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:500;outline:none;transition:border-color .2s;appearance:none}
+.fi-inp:focus{border-color:var(--red)}
+.fi-inp::placeholder{color:var(--text-dim)}
+select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239D9D9C'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+.preview{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:18px;margin-bottom:18px}
+.preview-ttl{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:14px}
+.pv-rail{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.pv-blk{flex:1;padding:11px 10px;background:var(--surface2);border-right:1px solid var(--border)}
+.pv-blk:last-child{border-right:none}
+.pv-blk.tax{background:rgba(248,113,113,0.07)}
+.pv-blk.cost{background:rgba(251,191,36,0.06)}
+.pv-blk.result{background:rgba(74,222,128,0.07)}
+.pv-op{display:flex;align-items:center;justify-content:center;padding:0 5px;font-size:15px;color:var(--text-muted);background:var(--surface);border-right:1px solid var(--border);flex-shrink:0}
+.pv-lbl{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px}
+.pv-val{font-size:13px;font-weight:800}
+.dist-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dc{background:var(--surface2);border-radius:var(--r);padding:10px;text-align:center}
+.dc-lbl{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px}
+.dc-val{font-size:15px;font-weight:800}
+.submit-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.sub-btn{background:var(--red);color:#fff;border:none;border-radius:var(--r);padding:12px 26px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
+.sub-btn:hover{opacity:.85}
+.sub-btn:disabled{opacity:.4;cursor:not-allowed}
+.sub-note{font-size:10px;color:var(--text-muted)}
+.toast{padding:10px 13px;border-radius:var(--r);font-size:11px;font-weight:600;margin-top:12px;display:none}
+.toast.ok{background:var(--green-bg);border:1px solid var(--green-border);color:var(--green)}
+.toast.err{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
+.toast.load{background:var(--info-bg);border:1px solid var(--info-border);color:var(--info)}
+.hist-empty{text-align:center;padding:48px 0;color:var(--text-muted);font-size:12px}
+.hi{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:10px}
+.hi-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.hi-nome{font-size:13px;font-weight:700}
+.hi-date{font-size:10px;color:var(--text-muted)}
+.hi-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-size:9px;padding:2px 7px;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border:1px solid}
+.tag-cl{background:var(--info-bg);color:var(--info);border-color:var(--info-border)}
+.tag-tp{background:var(--surface2);color:var(--text-muted);border-color:var(--border)}
+.tag-al{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border)}
+.tag-am{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.tag-bx{background:var(--surface2);color:var(--text-muted);border-color:var(--border)}
+.tag-pr{background:var(--info-bg);color:var(--info);border-color:var(--info-border)}
+.hi-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.hn{background:var(--surface2);border-radius:6px;padding:8px;text-align:center}
+.hn-lbl{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:2px}
+.hn-val{font-size:12px;font-weight:700}
+.hn-val.g{color:var(--green)}
+.hi-id{font-size:9px;color:var(--text-dim);margin-top:7px}
+.score-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:12px}
+.sc-pilares{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.scp{background:var(--surface2);border-radius:var(--r);padding:10px;text-align:center}
+.scp-lbl{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px}
+.scp-val{font-size:17px;font-weight:800}
+.scp-peso{font-size:9px;color:var(--text-muted);margin-top:2px}
+.comissao-box{background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--rl);padding:14px 18px;margin-top:14px;display:flex;justify-content:space-between;align-items:center}
+.score-tabela{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-top:12px}
+.st-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.st-row:last-child{border-bottom:none}
+.st-row.hl{background:var(--red-dim);margin:0 -4px;padding:9px 4px;border-radius:5px}
+.pol-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px;margin-bottom:20px}
+.pol-stats{display:flex;gap:28px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);flex-wrap:wrap}
+.ps-item .ps-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)}
+.ps-item .ps-val{font-size:18px;font-weight:900;color:var(--red);margin-top:1px}
+.pol-sec-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin:20px 0 13px;display:flex;align-items:center;gap:8px}
+.pol-sec-title::after{content:'';flex:1;height:1px;background:var(--red-border)}
+.pol-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pol-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden}
+.pol-card-head{padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.pol-card-head.red{background:var(--red-dim);color:var(--red);border-bottom:1px solid var(--red-border)}
+.pol-card-head.green{background:var(--green-bg);color:var(--green);border-bottom:1px solid var(--green-border)}
+.pol-card-head.amber{background:var(--amber-bg);color:var(--amber);border-bottom:1px solid var(--amber-border)}
+.pol-card-head.danger{background:var(--danger-bg);color:var(--danger);border-bottom:1px solid var(--danger-border)}
+.pol-card-head.info{background:var(--info-bg);color:var(--info);border-bottom:1px solid var(--info-border)}
+.pol-card-body{padding:12px 14px}
+.pol-row{padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text-muted);line-height:1.5}
+.pol-row:last-child{border-bottom:none}
+.pol-row strong{color:var(--text);font-weight:600}
+.formula-rail{display:flex;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:12px}
+.fr-blk{flex:1;padding:13px 11px;background:var(--surface);border-right:1px solid var(--border)}
+.fr-blk:last-child{border-right:none}
+.fr-blk.tax{background:rgba(248,113,113,0.07)}
+.fr-blk.cost{background:rgba(251,191,36,0.06)}
+.fr-blk.result{background:rgba(74,222,128,0.07)}
+.fr-op{display:flex;align-items:center;justify-content:center;padding:0 5px;font-size:15px;color:var(--text-muted);background:var(--surface2);border-right:1px solid var(--border);flex-shrink:0}
+.fr-lbl{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px}
+.fr-val{font-size:11px;font-weight:700}
+.pct-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:14px 10px;text-align:center}
+.pc-num{font-size:26px;font-weight:900;margin-bottom:3px}
+.pc-who{font-size:10px;font-weight:600;color:var(--text);margin-bottom:2px}
+.pc-when{font-size:9px;color:var(--text-muted);line-height:1.4}
+.pilar{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:10px}
+.pilar-head{background:var(--red-dim);border-bottom:1px solid var(--red-border);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.pilar-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text)}
+.pilar-pct{font-size:18px;font-weight:900;color:var(--red)}
+.pilar-body{padding:12px 16px}
+.kpi-row{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.kpi-row:last-child{border-bottom:none}
+.kpi-icon{width:24px;height:24px;border-radius:50%;background:var(--red-dim);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--red);flex-shrink:0}
+.kpi-name{font-size:11px;font-weight:700;color:var(--text)}
+.kpi-desc{font-size:10px;color:var(--text-muted);margin-top:2px;line-height:1.4}
+.kpi-meta{font-size:9px;color:var(--red);margin-top:3px;font-weight:700}
+.bonus-row{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)}
+.bonus-row:last-child{border-bottom:none}
+.bonus-score{font-size:12px;font-weight:600;color:var(--text)}
+.bonus-sub{font-size:10px;color:var(--text-muted);margin-top:1px}
+.bonus-val{font-size:18px;font-weight:900}
+.bv-none{color:var(--text-muted)}.bv-half{color:var(--amber)}.bv-full{color:var(--green)}
+.timeline{padding-left:22px;position:relative}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--red-border)}
+.tl-item{position:relative;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.tl-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.tl-item::before{content:'';position:absolute;left:-19px;top:4px;width:7px;height:7px;border-radius:50%;background:var(--red)}
+.tl-head{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text)}
+.tl-body{font-size:10px;color:var(--text-muted);margin-top:3px;line-height:1.5}
+@media(max-width:620px){
+  .form-grid,.pv-rail,.dist-row,.pol-grid2,.pct-grid,.sc-pilares,.formula-rail{grid-template-columns:1fr}
+  .pv-op,.fr-op{display:none}
+  .hi-nums{grid-template-columns:1fr 1fr}
+  .topbar,.tab-bar{padding:0 14px}
+  .main{padding:18px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">TGT Studio</div>
+    <div class="login-title">Extras &amp;<br><span>Comissões</span></div>
+    <p class="login-sub">Faça login para acessar</p>
+    <label class="fl">Usuário</label>
+    <select class="fi" id="l-user">
+      <option value="">Selecione...</option>
+      <option value="Caio">Caio — T1</option>
+      <option value="Marina">Marina — T1</option>
+      <option value="Amanda">Amanda — T3</option>
+      <option value="Luiza">Luiza — T4</option>
+      <option value="Camilla">Camilla — T5 / Packaging</option>
+      <option value="Julia">Julia — Head Account</option>
+      <optgroup label="Administração"><option value="JuliaADM">Julia ADM — Gestão</option><option value="TGTADM">TGT ADM — Gestão</option></optgroup>
+    </select>
+    <label class="fl">Senha</label>
+    <input class="fi" type="password" id="l-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-err" id="login-err">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-logo">TGT</div>
+      <div class="tb-sep"></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="tb-av" id="tb-av"></div>
+        <div><div class="tb-name" id="tb-name"></div><div class="tb-team" id="tb-team"></div></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sair</button>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('lancar',this)">Lançar Extra</button>
+    <button class="tab-btn" onclick="showTab('historico',this)">Histórico</button>
+    <button class="tab-btn" onclick="showTab('score',this)">Score</button>
+    <button class="tab-btn" onclick="showTab('politica',this)">Política</button>
+    <button class="tab-btn" id="tab-gestao" style="display:none" onclick="showTab('gestao',this)">Gestão ADM</button>
+    <button class="tab-btn" id="tab-score-adm" style="display:none" onclick="showTab('scoreadm',this)">Score ADM</button>
+  </div>
+  <div class="main">
+
+    <!-- LANÇAR -->
+    <div class="tab-pane active" id="pane-lancar">
+      <div class="sec-label">Novo projeto extra</div>
+      <div class="form-grid">
+        <div class="fg-full"><label class="fi-label">Nome do projeto</label><input class="fi-inp" type="text" id="f-nome" placeholder="Ex: Kerry — vídeo institucional Q2" oninput="calcPrev()"></div>
+        <div><label class="fi-label">Cliente</label>
+          <select class="fi-inp" id="f-cliente" onchange="calcPrev()">
+            <option value="">Selecione...</option>
+            <optgroup label="T1 — Caio"><option>Kerry Institucional</option><option>Celera</option><option>Siber</option></optgroup>
+            <optgroup label="T1 — Marina"><option>Brands (DaVinci+Junior)</option><option>Lesaffre</option></optgroup>
+            <optgroup label="T3 — Amanda"><option>Gamer Hut</option><option>Pão do Cambuí</option><option>Baptistella</option><option>NOU / Empório do Nono</option></optgroup>
+            <optgroup label="T4 — Luiza"><option>Kerry H&T</option><option>De Marchi BR</option><option>De Marchi USA</option><option>UV Line</option><option>Llev</option></optgroup>
+            <optgroup label="T5 — Camilla"><option>Kerry Packaging</option><option>Lesaffre Packaging</option></optgroup>
+          </select>
+        </div>
+        <div><label class="fi-label">Tipo de extra</label>
+          <select class="fi-inp" id="f-tipo" onchange="calcPrev()">
+            <option value="">Selecione...</option>
+            <option>Vídeo / Audiovisual</option><option>Horas adicionais</option><option>Projeto avulso</option>
+            <option>Bonificação gráfica</option><option>Bonificação plataforma (Google/Meta)</option>
+            <option>Campanha emergencial</option><option>Outro</option>
+          </select>
+        </div>
+        <div><label class="fi-label">Impacto</label>
+          <select class="fi-inp" id="f-impacto" onchange="calcPrev()">
+            <option value="">Selecione...</option>
+            <option value="Alto">Alto — venda direta / diretoria / lançamento</option>
+            <option value="Médio">Médio — sustenta presença</option>
+            <option value="Baixo">Baixo — ajuste / operacional</option>
+          </select>
+        </div>
+        <div><label class="fi-label">Operação</label>
+          <select class="fi-inp" id="f-op" onchange="calcPrev()">
+            <option value="normal">T1 / T3 / T4 / T5 — padrão</option>
+            <option value="prod">PROD — produção física</option>
+          </select>
+        </div>
+        <div><label class="fi-label">Budget do projeto (R$)</label><input class="fi-inp" type="number" id="f-budget" placeholder="0" oninput="calcPrev()"></div>
+        <div><label class="fi-label">Custo do time (R$)</label><input class="fi-inp" type="number" id="f-ctime" placeholder="Horas × taxa interna" oninput="calcPrev()"></div>
+        <div><label class="fi-label">Custos diversos (R$)</label><input class="fi-inp" type="number" id="f-cdiv" placeholder="Transp. + alim. + fornecedores" oninput="calcPrev()"></div>
+        <div class="fg-full"><label class="fi-label">Stakeholders elegíveis (opcional)</label><input class="fi-inp" type="text" id="f-stake" placeholder="Ex: Enzo 60%, Mariana 40%"></div>
+        <div class="fg-full"><label class="fi-label">Observações</label><input class="fi-inp" type="text" id="f-obs" placeholder="Contexto adicional"></div>
+      </div>
+      <div class="preview">
+        <div class="preview-ttl">Prévia da distribuição</div>
+        <div class="pv-rail">
+          <div class="pv-blk"><div class="pv-lbl">Budget</div><div class="pv-val" id="pv-b" style="color:var(--text)">R$ 0</div></div>
+          <div class="pv-op">−</div>
+          <div class="pv-blk tax"><div class="pv-lbl">Impostos 18%</div><div class="pv-val" id="pv-i" style="color:var(--danger)">R$ 0</div></div>
+          <div class="pv-op">−</div>
+          <div class="pv-blk cost"><div class="pv-lbl">Custo time</div><div class="pv-val" id="pv-t" style="color:var(--amber)">R$ 0</div></div>
+          <div class="pv-op">−</div>
+          <div class="pv-blk cost"><div class="pv-lbl">Custos div.</div><div class="pv-val" id="pv-d" style="color:var(--amber)">R$ 0</div></div>
+          <div class="pv-op">=</div>
+          <div class="pv-blk result"><div class="pv-lbl">Base comissão</div><div class="pv-val" id="pv-base" style="color:var(--green)">R$ 0</div></div>
+        </div>
+        <div class="dist-row">
+          <div class="dc"><div class="dc-lbl">Sua comissão</div><div class="dc-val" id="pv-acc" style="color:var(--green)">R$ 0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px" id="pv-acc-s">0%</div></div>
+          <div class="dc"><div class="dc-lbl" id="pv-el">Stakeholders</div><div class="dc-val" id="pv-extra" style="color:var(--info)">R$ 0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px" id="pv-extra-s"></div></div>
+          <div class="dc"><div class="dc-lbl">Margem TGT</div><div class="dc-val" id="pv-tgt" style="color:var(--green)">R$ 0</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px" id="pv-tgt-s">0%</div></div>
+          <div class="dc"><div class="dc-lbl">Seu score</div><div class="dc-val" id="pv-sc" style="color:var(--text-muted)">—</div><div style="font-size:9px;color:var(--text-muted);margin-top:2px" id="pv-sc-s"></div></div>
+        </div>
+        <div id="pv-alert" style="margin-top:12px"></div>
+      </div>
+      <div class="submit-row">
+        <button class="sub-btn" id="sub-btn" onclick="submitExtra()">Salvar no Monday</button>
+        <span class="sub-note">Cria item no board TGT — Extras & Comissionamento</span>
+      </div>
+      <div class="toast" id="toast"></div>
+    </div>
+
+    <!-- HISTÓRICO -->
+    <div class="tab-pane" id="pane-historico">
+      <div class="sec-label">Meus lançamentos</div>
+      <div id="hist-list"></div>
+    </div>
+
+    <!-- SCORE -->
+    <div class="tab-pane" id="pane-score">
+      <div class="sec-label">Meu score & comissão</div>
+      <div id="score-view"></div>
+    </div>
+
+    <!-- POLÍTICA -->
+    <div class="tab-pane" id="pane-politica">
+      <div class="pol-hero">
+        <div style="font-size:24px;font-weight:900;text-transform:uppercase;line-height:1.05;margin-bottom:4px">Política de <span style="color:var(--red)">Comissionamento</span></div>
+        <p style="font-size:11px;color:var(--text-muted)">TGT Studio · Vigência 2026 · Documento interno</p>
+        <div class="pol-stats">
+          <div class="ps-item"><div class="ps-lbl">Accounts T1–T5</div><div class="ps-val">Até 20%</div></div>
+          <div class="ps-item"><div class="ps-lbl">PROD (account)</div><div class="ps-val">15%</div></div>
+          <div class="ps-item"><div class="ps-lbl">Amanda (PROD)</div><div class="ps-val">15%</div></div>
+          <div class="ps-item"><div class="ps-lbl">Stakeholders</div><div class="ps-val">Até 10%</div></div>
+          <div class="ps-item"><div class="ps-lbl">Impostos fixos</div><div class="ps-val">18%</div></div>
+        </div>
+      </div>
+
+      <div class="pol-sec-title">Fórmula de cálculo</div>
+      <div class="formula-rail">
+        <div class="fr-blk"><div class="fr-lbl">Budget</div><div class="fr-val" style="color:var(--text)">Valor faturado ao cliente</div></div>
+        <div class="fr-op">−</div>
+        <div class="fr-blk tax"><div class="fr-lbl">Impostos 18%</div><div class="fr-val" style="color:var(--danger)">Budget × 18%</div></div>
+        <div class="fr-op">−</div>
+        <div class="fr-blk cost"><div class="fr-lbl">Custo do time</div><div class="fr-val" style="color:var(--amber)">Horas × taxa interna</div></div>
+        <div class="fr-op">−</div>
+        <div class="fr-blk cost"><div class="fr-lbl">Custos diversos</div><div class="fr-val" style="color:var(--amber)">Transp. + alim. + fornec.</div></div>
+        <div class="fr-op">=</div>
+        <div class="fr-blk result"><div class="fr-lbl">Base de comissão</div><div class="fr-val" style="color:var(--green)">% incidem aqui</div></div>
+      </div>
+
+      <div class="pol-sec-title">Percentuais por função</div>
+      <div class="pct-grid">
+        <div class="pc"><div class="pc-num" style="color:var(--green)">20%</div><div class="pc-who">Score 9–10</div><div class="pc-when">T1/T3/T4/T5</div></div>
+        <div class="pc"><div class="pc-num" style="color:var(--amber)">15%</div><div class="pc-who">Score 8–8,9</div><div class="pc-when">T1/T3/T4/T5</div></div>
+        <div class="pc"><div class="pc-num" style="color:var(--text-muted)">10%</div><div class="pc-who">Score 7–7,9</div><div class="pc-when">T1/T3/T4/T5</div></div>
+        <div class="pc"><div class="pc-num" style="color:var(--info)">15%</div><div class="pc-who">Account PROD + Amanda</div><div class="pc-when">Cada um · 30% máx</div></div>
+        <div class="pc"><div class="pc-num" style="color:var(--text-muted)">10%</div><div class="pc-who">Stakeholders total</div><div class="pc-when">Dividido pelo account</div></div>
+      </div>
+
+      <div class="pol-sec-title">Score & comissão escalonada</div>
+      <div class="pol-grid2">
+        <div class="pol-card">
+          <div class="pol-card-head red">Composição do score (mensal)</div>
+          <div class="pol-card-body">
+            <div class="pol-row"><strong>30%</strong> — Qualidade estratégica (briefings, impacto, direcionamentos)</div>
+            <div class="pol-row"><strong>25%</strong> — Eficiência operacional (horas, retrabalho, prazos, Monday)</div>
+            <div class="pol-row"><strong>25%</strong> — Rentabilidade (extras captados, horas adicionais aplicadas)</div>
+            <div class="pol-row"><strong>20%</strong> — Relação com cliente (NPS, tempo de resposta)</div>
+            <div class="pol-row">Compilado por <strong>Julia</strong> até dia 5 de cada mês</div>
+          </div>
+        </div>
+        <div class="pol-card">
+          <div class="pol-card-head red">Tabela comissão × score</div>
+          <div class="pol-card-body" style="padding:0">
+            <div class="bonus-row"><div><div class="bonus-score">Score &lt; 6,0</div><div class="bonus-sub">Perde acumulado</div></div><div class="bonus-val bv-none">0%</div></div>
+            <div class="bonus-row"><div><div class="bonus-score">Score 6,0–6,9</div><div class="bonus-sub">Suspenso — acumula</div></div><div class="bonus-val bv-none">0%*</div></div>
+            <div class="bonus-row"><div><div class="bonus-score">Score 7,0–7,9</div></div><div class="bonus-val bv-half">10%</div></div>
+            <div class="bonus-row"><div><div class="bonus-score">Score 8,0–8,9</div></div><div class="bonus-val bv-half">15%</div></div>
+            <div class="bonus-row"><div><div class="bonus-score">Score 9,0–10</div></div><div class="bonus-val bv-full">20%</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pol-sec-title">KPIs de elegibilidade</div>
+      <div class="pilar"><div class="pilar-head"><div class="pilar-title">1. Qualidade estratégica</div><div class="pilar-pct">30%</div></div><div class="pilar-body">
+        <div class="kpi-row"><div class="kpi-icon">B</div><div><div class="kpi-name">Briefings completos</div><div class="kpi-desc">% dos jobs com objetivo + impacto + prazo + referência</div><div class="kpi-meta">Meta: ≥ 85% dos jobs</div></div></div>
+        <div class="kpi-row"><div class="kpi-icon">I</div><div><div class="kpi-name">Classificação de impacto</div><div class="kpi-desc">100% dos jobs com Alto/Médio/Baixo. Mínimo 20% Alto/mês.</div><div class="kpi-meta">Meta: 100% classificados</div></div></div>
+        <div class="kpi-row"><div class="kpi-icon">D</div><div><div class="kpi-name">Direcionamentos estratégicos</div><div class="kpi-desc">Iniciativas proativas ao cliente (não reativas)</div><div class="kpi-meta">Meta: ≥ 3 por mês por cliente</div></div></div>
+      </div></div>
+      <div class="pilar"><div class="pilar-head"><div class="pilar-title">2. Eficiência operacional</div><div class="pilar-pct">25%</div></div><div class="pilar-body">
+        <div class="kpi-row"><div class="kpi-icon">H</div><div><div class="kpi-name">Aderência de horas</div><div class="kpi-desc">% consumo vs. contratado via TMetric</div><div class="kpi-meta">90–105% saudável · &gt;120% PROBLEMA</div></div></div>
+        <div class="kpi-row"><div class="kpi-icon">R</div><div><div class="kpi-name">Taxa de retrabalho</div><div class="kpi-desc">% jobs com refação por erro interno</div><div class="kpi-meta">&lt;10% excelente · &gt;20% ZERA bônus</div></div></div>
+        <div class="kpi-row"><div class="kpi-icon">P</div><div><div class="kpi-name">Prazos</div><div class="kpi-desc">% de entregas no prazo acordado</div><div class="kpi-meta">≤5% atraso excelente</div></div></div>
+      </div></div>
+      <div class="pilar"><div class="pilar-head"><div class="pilar-title">3. Rentabilidade</div><div class="pilar-pct">25%</div></div><div class="pilar-body">
+        <div class="kpi-row"><div class="kpi-icon">+</div><div><div class="kpi-name">Horas adicionais aplicadas</div><div class="kpi-desc">% extras faturados sobre estouros realizados</div><div class="kpi-meta">10–20% saudável · &lt;8% PERDA</div></div></div>
+        <div class="kpi-row"><div class="kpi-icon">C</div><div><div class="kpi-name">Captura de oportunidades</div><div class="kpi-desc">Verbas extras identificadas e convertidas no mês</div><div class="kpi-meta">Meta: ≥ 1 extra/mês por cliente</div></div></div>
+      </div></div>
+      <div class="pilar"><div class="pilar-head"><div class="pilar-title">4. Relação com cliente</div><div class="pilar-pct">20%</div></div><div class="pilar-body">
+        <div class="kpi-row"><div class="kpi-icon">N</div><div><div class="kpi-name">NPS / satisfação</div><div class="kpi-desc">Formulário trimestral automático via Make → Monday</div><div class="kpi-meta">Meta: NPS ≥ 7 por cliente</div></div></div>
+        <div class="kpi-row"><div class="kpi-icon">R</div><div><div class="kpi-name">Tempo de resposta</div><div class="kpi-desc">Monitor Make. Alerta em 2 dias úteis sem resposta.</div><div class="kpi-meta">Meta: &lt;2 dias úteis em 95%</div></div></div>
+      </div></div>
+
+      <div class="pol-sec-title">Bloqueios automáticos</div>
+      <div class="pol-grid2">
+        <div class="pol-card"><div class="pol-card-head danger">Cancelamento por performance</div><div class="pol-card-body">
+          <div class="pol-row"><strong>Impacto:</strong> 100% bloqueado no mês + mês seguinte</div>
+          <div class="pol-row"><strong>Gatilho:</strong> Motivo = Performance no board Status Contratos</div>
+          <div class="pol-row"><strong>Recuperação:</strong> após novo contrato ativo</div>
+        </div></div>
+        <div class="pol-card"><div class="pol-card-head amber">Inadimplência do cliente</div><div class="pol-card-body">
+          <div class="pol-row"><strong>Impacto:</strong> comissão retida — não é perdida, aguarda caixa</div>
+          <div class="pol-row"><strong>Score:</strong> account não é penalizado</div>
+          <div class="pol-row"><strong>Parcelamento:</strong> liberação proporcional às parcelas recebidas</div>
+        </div></div>
+        <div class="pol-card"><div class="pol-card-head danger">Score baixo</div><div class="pol-card-body">
+          <div class="pol-row"><strong>6–6,9:</strong> suspenso, acumula e paga quando ≥ 7</div>
+          <div class="pol-row"><strong>&lt; 6:</strong> acumulado perdido, reinicia no mês seguinte</div>
+          <div class="pol-row"><strong>Zero automático:</strong> retrabalho &gt;20%, estouro sem controle</div>
+        </div></div>
+        <div class="pol-card"><div class="pol-card-head green">Cancelamento sem culpa TGT</div><div class="pol-card-body">
+          <div class="pol-row"><strong>Impacto:</strong> nenhum — account não é penalizado</div>
+          <div class="pol-row"><strong>Gatilho:</strong> Motivo = Decisão cliente / Mercado</div>
+          <div class="pol-row"><strong>Extras pendentes:</strong> pagos normalmente se no caixa</div>
+        </div></div>
+      </div>
+
+      <div class="pol-sec-title">Calendário de apuração</div>
+      <div class="pol-card"><div class="pol-card-body">
+        <div class="timeline">
+          <div class="tl-item"><div class="tl-head">Dia 1–28 — operação</div><div class="tl-body">Accounts lançam projetos extras neste app. Horas registradas no TMetric. Verbas aprovadas lançadas imediatamente.</div></div>
+          <div class="tl-item"><div class="tl-head">Dia 1–5 do mês seguinte — apuração</div><div class="tl-body">Julia compila score de cada account. Lívia confirma entradas no caixa e libera comissões no Monday.</div></div>
+          <div class="tl-item"><div class="tl-head">Dia 5–8 — revisão</div><div class="tl-body">João revisa e aprova. Contestações em até 48h após comunicado.</div></div>
+          <div class="tl-item"><div class="tl-head">Dia 10 — pagamento</div><div class="tl-body">Comissões pagas somente sobre receita no caixa até o dia 5. Retidos por inadimplência liberados na apuração seguinte.</div></div>
+        </div>
+      </div></div>
+
+      <div class="pol-sec-title">Head Account — Julia</div>
+      <div class="pol-grid2">
+        <div class="pol-card"><div class="pol-card-head red">KPIs de Julia</div><div class="pol-card-body">
+          <div class="pol-row">Score médio de todos os accounts ≥ 7,5 no trimestre</div>
+          <div class="pol-row">Estouro sem aprovação ≤ 5% do total de horas</div>
+          <div class="pol-row">Crescimento de extras consolidados ≥ 10% trimestral</div>
+          <div class="pol-row">Relatório de scores entregue até dia 5 de cada mês</div>
+          <div class="pol-row"><strong>Bônus adicional:</strong> 5% do crescimento incremental quando &gt;20% no trimestre</div>
+        </div></div>
+        <div class="pol-card"><div class="pol-card-head red">Premiação trimestral</div><div class="pol-card-body" style="padding:0">
+          <div class="bonus-row"><div><div class="bonus-score">Score médio &lt; 7,0</div></div><div class="bonus-val bv-none">Sem bônus</div></div>
+          <div class="bonus-row"><div><div class="bonus-score">Score médio 7,0–7,9</div></div><div class="bonus-val bv-half">+25%</div></div>
+          <div class="bonus-row"><div><div class="bonus-score">Score médio 8,0–8,9</div></div><div class="bonus-val bv-half">+35%</div></div>
+          <div class="bonus-row"><div><div class="bonus-score">Score médio ≥ 9,0</div></div><div class="bonus-val bv-full">+55%</div></div>
+          <div style="padding:10px 14px;font-size:10px;color:var(--text-muted)">% sobre salário mensal base · bônus trimestral</div>
+        </div></div>
+      </div>
+
+    </div><!-- /pane-politica -->
+
+    <!-- GESTÃO ADM -->
+    <div class="tab-pane" id="pane-gestao">
+      <div class="sec-label">Painel de gestão</div>
+
+      <!-- FILTERS -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;align-items:end">
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Account</div>
+            <select class="fi-inp" id="gf-account" onchange="renderGestao()">
+              <option value="">Todos</option>
+              <option>Caio</option><option>Marina</option><option>Amanda</option><option>Luiza</option><option>Camilla</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Cliente</div>
+            <select class="fi-inp" id="gf-cliente" onchange="renderGestao()">
+              <option value="">Todos</option>
+              <option>Kerry Institucional</option><option>Celera</option><option>Siber</option>
+              <option>Brands (DaVinci+Junior)</option><option>Lesaffre</option>
+              <option>Gamer Hut</option><option>Pão do Cambuí</option><option>Baptistella</option><option>NOU / Empório do Nono</option>
+              <option>Kerry H&T</option><option>De Marchi BR</option><option>De Marchi USA</option><option>UV Line</option><option>Llev</option>
+              <option>Kerry Packaging</option><option>Lesaffre Packaging</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Tipo</div>
+            <select class="fi-inp" id="gf-tipo" onchange="renderGestao()">
+              <option value="">Todos</option>
+              <option>Vídeo / Audiovisual</option><option>Horas adicionais</option><option>Projeto avulso</option>
+              <option>Bonificação gráfica</option><option>Bonificação plataforma (Google/Meta)</option>
+              <option>Campanha emergencial</option><option>Outro</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Impacto</div>
+            <select class="fi-inp" id="gf-impacto" onchange="renderGestao()">
+              <option value="">Todos</option><option>Alto</option><option>Médio</option><option>Baixo</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Período</div>
+            <select class="fi-inp" id="gf-periodo" onchange="renderGestao()">
+              <option value="">Tudo</option>
+              <option value="01/2026">Jan 2026</option><option value="02/2026">Fev 2026</option>
+              <option value="03/2026">Mar 2026</option><option value="04/2026">Abr 2026</option>
+              <option value="05/2026">Mai 2026</option><option value="06/2026">Jun 2026</option>
+            </select>
+          </div>
+          <button class="sub-btn" style="padding:10px 16px;font-size:9px" onclick="clearFilters()">Limpar</button>
+        </div>
+      </div>
+
+      <!-- KPI CARDS -->
+      <div id="gestao-kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px"></div>
+
+      <!-- CHART: por account -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:14px">Comissão por account</div>
+          <div id="chart-account"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:14px">Budget por cliente</div>
+          <div id="chart-cliente"></div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700">Todos os lançamentos</div>
+          <div id="gestao-count" style="font-size:10px;color:var(--text-muted)"></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr id="gestao-thead" style="background:var(--surface2)"></tr>
+            </thead>
+            <tbody id="gestao-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TOTALS -->
+      <div id="gestao-totals" style="margin-top:14px"></div>
+
+    </div><!-- /pane-gestao -->
+
+    <!-- SCORE ADM -->
+    <div class="tab-pane" id="pane-scoreadm">
+      <div class="sec-label">Aplicar score mensal</div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end">
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Account</div>
+            <select class="fi-inp" id="sadm-account" onchange="loadScoreAdm()">
+              <option value="">Selecione...</option>
+              <option>Caio</option><option>Marina</option><option>Amanda</option><option>Luiza</option><option>Camilla</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Mês/Ano</div>
+            <select class="fi-inp" id="sadm-mes">
+              <option>04/2026</option><option>05/2026</option><option>06/2026</option>
+              <option>07/2026</option><option>08/2026</option><option>09/2026</option>
+              <option>10/2026</option><option>11/2026</option><option>12/2026</option>
+            </select>
+          </div>
+          <button class="sub-btn" style="padding:10px 16px;font-size:9px" onclick="loadScoreAdm()">Carregar</button>
+        </div>
+      </div>
+
+      <div id="sadm-form" style="display:none">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:16px">Pilares — nota de 0 a 10</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P1 — Qualidade Estratégica</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 30%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">Briefings completos · classificação de impacto · direcionamentos ao cliente</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p1" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p1-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P2 — Eficiência Operacional</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 25%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">Aderência de horas · retrabalho · prazos · qualidade Monday</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p2" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p2-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P3 — Rentabilidade</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 25%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">Horas adicionais aplicadas · captura de oportunidades extras</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p3" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p3-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P4 — Relação com Cliente</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 20%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">NPS · tempo de resposta · evolução estratégica do cliente</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p4" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p4-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="fi-label">Bloqueio ativo (opcional)</label>
+              <select class="fi-inp" id="sadm-bloqueio">
+                <option value="">Nenhum</option>
+                <option value="Cancelamento por performance — comissão bloqueada">Cancelamento por performance</option>
+                <option value="Cliente inadimplente — comissão suspensa até regularização">Inadimplência do cliente</option>
+                <option value="Retrabalho &gt; 20% — bônus zerado">Retrabalho excessivo (&gt;20%)</option>
+                <option value="Estouro de horas sem controle — bônus zerado">Estouro de horas sem controle</option>
+              </select>
+            </div>
+            <div>
+              <label class="fi-label">Observações para o account</label>
+              <input class="fi-inp" type="text" id="sadm-obs" placeholder="Ex: Melhorar briefings no cliente X">
+            </div>
+          </div>
+
+          <div id="sadm-preview" style="background:var(--surface2);border-radius:var(--rl);padding:16px;margin-bottom:16px">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center">
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">Score final</div>
+                <div style="font-size:36px;font-weight:900" id="sadm-score-final" style="color:var(--text-muted)">0,0</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">Status</div>
+                <div style="font-size:14px;font-weight:700;margin-top:8px" id="sadm-status">—</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">% comissão</div>
+                <div style="font-size:36px;font-weight:900;color:var(--green)" id="sadm-pct">0%</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">Avaliando</div>
+                <div style="font-size:14px;font-weight:700;color:var(--red);margin-top:8px" id="sadm-who">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:center">
+            <button class="sub-btn" id="sadm-save-btn" onclick="saveScore()">Salvar Score no Monday</button>
+            <span style="font-size:10px;color:var(--text-muted)">O account verá o score atualizado imediatamente</span>
+          </div>
+          <div class="toast" id="sadm-toast"></div>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:12px">Histórico de scores do account</div>
+          <div id="sadm-hist"></div>
+        </div>
+      </div>
+
+      <div id="sadm-empty" style="text-align:center;padding:48px 0;color:var(--text-muted);font-size:12px">Selecione um account e clique em Carregar para avaliar.</div>
+    </div><!-- /pane-scoreadm -->
+
+
+  </div>
+</div>
+
+<script>
+const MONDAY_PROXY = '/api/monday';
+const BOARD_ID = 18408140037;
+
+const USERS = {
+  Caio:    {pass:'CCCA235', team:'T1 · Kerry + Siber + Celera',    initials:'CA'},
+  Marina:  {pass:'MARN847', team:'T1 · Brands + Lesaffre',          initials:'MA'},
+  Amanda:  {pass:'AMDT563', team:'T3 · Performance + coord. PROD',  initials:'AM'},
+  Luiza:   {pass:'LUIZ921', team:'T4 · Kerry H&T + De Marchi + UV', initials:'LU'},
+  Camilla: {pass:'CAMP418', team:'T5 · Packaging',                  initials:'CN'},
+  Julia:   {pass:'JULA736', team:'Head Account',                    initials:'JU', admin:false},
+  JuliaADM:{pass:'JADM901', team:'Gestão · Head Account ADM',       initials:'JA', admin:true},
+  TGTADM:  {pass:'TGTA007', team:'Gestão · TGT Administração',      initials:'AD', admin:true},
+};
+
+const SCORE_DATA = {
+  Caio:    {score:8.5, pilares:[8.8,8.2,8.7,8.3], bloqueio:''},
+  Marina:  {score:9.1, pilares:[9.4,8.9,9.0,9.2], bloqueio:''},
+  Amanda:  {score:8.0, pilares:[8.1,7.9,8.2,7.8], bloqueio:''},
+  Luiza:   {score:8.8, pilares:[9.0,8.5,9.1,8.6], bloqueio:''},
+  Camilla: {score:7.6, pilares:[7.8,7.4,7.5,7.7], bloqueio:''},
+  Julia:   {score:8.3, pilares:[8.5,8.1,8.4,8.2], bloqueio:''},
+};
+
+let me = null;
+let hist = JSON.parse(localStorage.getItem('tgt_hist')||'{}');
+const brl = v => 'R$ '+Math.round(v).toLocaleString('pt-BR');
+
+function doLogin(){
+  const user = document.getElementById('l-user').value;
+  const pass = document.getElementById('l-pass').value;
+  const err = document.getElementById('login-err');
+  if(!user || !USERS[user] || USERS[user].pass !== pass){
+    err.style.display='block';
+    document.getElementById('l-pass').value='';
+    return;
+  }
+  err.style.display='none';
+  me = {name:user, ...USERS[user]};
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  document.getElementById('tb-av').textContent = me.initials;
+  document.getElementById('tb-name').textContent = me.name;
+  document.getElementById('tb-team').textContent = me.team;
+  calcPrev(); renderHist(); renderScore();
+  const tabG = document.getElementById('tab-gestao');
+  const tabS = document.getElementById('tab-score-adm');
+  if(me.admin){
+    tabG.style.display='block';
+    tabS.style.display='block';
+    showTab('gestao', tabG);
+  } else {
+    tabG.style.display='none';
+    tabS.style.display='none';
+  }
+}
+
+function doLogout(){
+  me = null;
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-lancar').classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.tab-btn').classList.add('active');
+}
+
+function showTab(id, btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='historico') renderHist();
+  if(id==='score') renderScore();
+  if(id==='gestao') renderGestao();
+  if(id==='scoreadm') renderScoreAdm();
+}
+
+function scorePct(s){ return s>=9?.20:s>=8?.15:s>=7?.10:0 }
+
+function calcPrev(){
+  if(!me) return;
+  const b=parseFloat(document.getElementById('f-budget').value)||0;
+  const ct=parseFloat(document.getElementById('f-ctime').value)||0;
+  const cd=parseFloat(document.getElementById('f-cdiv').value)||0;
+  const op=document.getElementById('f-op').value;
+  const sd=SCORE_DATA[me.name]; const sc=sd?.score||0;
+  const imp=b*0.18, base=Math.max(0,b-imp-ct-cd);
+  const pct=scorePct(sc);
+  let acc=0,extra=0;
+  if(op==='prod'){acc=base*0.15;extra=base*0.15;}
+  else{acc=base*pct;extra=base*0.10;}
+  const tgt=base-acc-extra;
+  document.getElementById('pv-b').textContent=brl(b);
+  document.getElementById('pv-i').textContent='('+brl(imp)+')';
+  document.getElementById('pv-t').textContent='('+brl(ct)+')';
+  document.getElementById('pv-d').textContent='('+brl(cd)+')';
+  document.getElementById('pv-base').textContent=brl(base);
+  document.getElementById('pv-acc').textContent=brl(acc);
+  document.getElementById('pv-acc-s').textContent=op==='prod'?'15% PROD':(Math.round(pct*100)+'% — score '+sc.toFixed(1));
+  document.getElementById('pv-el').textContent=op==='prod'?'Amanda (coord.)':'Stakeholders (10%)';
+  document.getElementById('pv-extra').textContent=brl(extra);
+  document.getElementById('pv-extra-s').textContent=op==='prod'?'15% PROD':'dividir entre elegíveis';
+  document.getElementById('pv-tgt').textContent=brl(tgt);
+  document.getElementById('pv-tgt-s').textContent=b>0?Math.round(tgt/b*100)+'% do budget':'0%';
+  document.getElementById('pv-sc').textContent=sc.toFixed(1);
+  document.getElementById('pv-sc-s').textContent=sc>=9?'20%':sc>=8?'15%':sc>=7?'10%':sc>=6?'Suspenso':'Sem comissão';
+  let al='';
+  if(sd?.bloqueio) al=`<div style="background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--danger)">${sd.bloqueio}</div>`;
+  else if(sc<7&&sc>0) al=`<div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--amber)">Score atual ${sc.toFixed(1)} — comissão suspensa até atingir 7,0</div>`;
+  else if(b>0&&base>0&&(acc+extra)/base>0.5) al=`<div style="background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r);padding:9px 12px;font-size:11px;color:var(--amber)">Comissionamento representa mais de 50% da base. Verifique a margem.</div>`;
+  document.getElementById('pv-alert').innerHTML=al;
+}
+
+async function submitExtra(){
+  const nome=document.getElementById('f-nome').value.trim();
+  const cliente=document.getElementById('f-cliente').value;
+  const tipo=document.getElementById('f-tipo').value;
+  const impacto=document.getElementById('f-impacto').value;
+  const op=document.getElementById('f-op').value;
+  const b=parseFloat(document.getElementById('f-budget').value)||0;
+  const ct=parseFloat(document.getElementById('f-ctime').value)||0;
+  const cd=parseFloat(document.getElementById('f-cdiv').value)||0;
+  const stake=document.getElementById('f-stake').value.trim();
+  const obs=document.getElementById('f-obs').value.trim();
+  if(!nome||!cliente||!tipo||!impacto||b<=0){showToast('Preencha todos os campos obrigatórios.','err');return;}
+  const imp=b*0.18, base=Math.max(0,b-imp-ct-cd);
+  const sc=SCORE_DATA[me.name]?.score||0;
+  const acc=op==='prod'?base*0.15:base*scorePct(sc);
+  const amanda=op==='prod'?base*0.15:0;
+  const stakeVal=op==='prod'?0:base*0.10;
+  const tgt=base-acc-amanda-stakeVal;
+  const btn=document.getElementById('sub-btn');
+  btn.disabled=true; showToast('Enviando para o Monday...','load');
+  const iName=`${me.name} · ${cliente} · ${nome}`.replace(/"/g,"'");
+  const colVals = JSON.stringify({
+    "text_mm29nem0": cliente,
+    "text_mm29t49x": stake||(op==='prod'?'Amanda (coord. PROD)':'-'),
+    "numeric_mm29gd14": b,
+    "numeric_mm293aw7": ct,
+    "numeric_mm29457g": cd,
+    "numeric_mm29v6ms": Math.round(base),
+    "numeric_mm29ht36": Math.round(acc),
+    "numeric_mm29zmyy": Math.round(op==='prod'?amanda:stakeVal),
+    "numeric_mm29xf9": Math.round(tgt)
+  });
+  const gqlBody = JSON.stringify({
+    query: `mutation { create_item(board_id: ${BOARD_ID}, item_name: "${iName}", column_values: ${JSON.stringify(colVals)}) { id } }`
+  });
+  try{
+    const res=await fetch(MONDAY_PROXY,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: gqlBody
+    });
+    const data=await res.json();
+    if(data.errors) throw new Error(data.errors[0].message);
+    const mid=data?.data?.create_item?.id||'—';
+    const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
+    if(!hist[me.name]) hist[me.name]=[];
+    hist[me.name].unshift(entry);
+    // Save to Monday-backed history via /api/monday
+    const histQuery = JSON.stringify({
+      query: `mutation { create_item(board_id: ${BOARD_EXTRAS}, item_name: "HIST·${me.name}·${new Date().toLocaleDateString('pt-BR')}·${nome.replace(/"/g,"'")}",
+        column_values: "{\"text_mm29nem0\":\"${cliente}\",\"text_mm29t49x\":\"${(stake||(op==='prod'?'Amanda (coord. PROD)':'-')).replace(/"/g,"'")}\",\"numeric_mm29gd14\":${b},\"numeric_mm293aw7\":${ct},\"numeric_mm29457g\":${cd},\"numeric_mm29v6ms\":${Math.round(base)},\"numeric_mm29ht36\":${Math.round(acc)},\"numeric_mm29zmyy\":${Math.round(op==='prod'?amanda:stakeVal)},\"numeric_mm29xf9\":${Math.round(tgt)}}"
+      ) { id } }`
+    });
+    // Also save locally as backup
+    const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
+    if(!hist[me.name]) hist[me.name]=[];
+    hist[me.name].unshift(entry);
+    localStorage.setItem('tgt_hist',JSON.stringify(hist));
+    showToast('Lançado! Item #'+mid+' criado no Monday.','ok');
+    resetForm();
+  }catch(e){showToast('Erro: '+e.message,'err');}
+  btn.disabled=false;
+}
+
+function resetForm(){
+  ['f-nome','f-budget','f-ctime','f-cdiv','f-stake','f-obs'].forEach(id=>document.getElementById(id).value='');
+  ['f-cliente','f-tipo','f-impacto'].forEach(id=>document.getElementById(id).selectedIndex=0);
+  calcPrev();
+}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type; t.style.display='block';
+  if(type!=='load') setTimeout(()=>t.style.display='none',4000);
+}
+
+function renderHist(){
+  const el=document.getElementById('hist-list');
+  const entries=hist[me?.name]||[];
+  if(!entries.length){el.innerHTML='<div class="hist-empty">Nenhum lançamento ainda.<br>Use "Lançar Extra" para registrar seu primeiro projeto.</div>';return;}
+  el.innerHTML=entries.map(e=>`
+    <div class="hi">
+      <div class="hi-head"><div class="hi-nome">${e.nome}</div><div class="hi-date">${e.date}</div></div>
+      <div class="hi-tags">
+        <span class="tag tag-cl">${e.cliente}</span><span class="tag tag-tp">${e.tipo}</span>
+        <span class="tag tag-${e.impacto==='Alto'?'al':e.impacto==='Médio'?'am':'bx'}">${e.impacto}</span>
+        ${e.op==='prod'?'<span class="tag tag-pr">PROD</span>':''}
+      </div>
+      <div class="hi-nums">
+        <div class="hn"><div class="hn-lbl">Budget</div><div class="hn-val">${brl(e.b)}</div></div>
+        <div class="hn"><div class="hn-lbl">Base com.</div><div class="hn-val">${brl(e.base)}</div></div>
+        <div class="hn"><div class="hn-lbl">Sua comissão</div><div class="hn-val g">${brl(e.acc)}</div></div>
+        <div class="hn"><div class="hn-lbl">Margem TGT</div><div class="hn-val g">${brl(e.tgt)}</div></div>
+      </div>
+      ${e.id?`<div class="hi-id">Monday #${e.id}</div>`:''}
+    </div>`).join('');
+}
+
+async function renderScore(){
+  const el=document.getElementById('score-view');
+  el.innerHTML='<div class="hist-empty">Carregando score do Monday...</div>';
+  try {
+    const r = await fetch(MONDAY_PROXY, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query: `{ boards(ids: [${BOARD_SCORES}]) { items_page(limit: 50) { items { id name column_values { id text value } } } } }` })
+    });
+    const data = await r.json();
+    const items = data?.data?.boards?.[0]?.items_page?.items || [];
+    // Find latest score for current account
+    const myItems = items.filter(i => {
+      const accCol = i.column_values.find(c=>c.id==='text_mm2ahpp1');
+      return accCol && accCol.text === me.name;
+    }).sort((a,b) => b.id - a.id);
+    const latest = myItems[0];
+    let sd = SCORE_DATA[me.name]; // fallback to static
+    if(latest) {
+      const get = (id) => parseFloat(latest.column_values.find(c=>c.id===id)?.text||0);
+      sd = {
+        score: get('numeric_mm2adftd') || SCORE_DATA[me.name]?.score || 0,
+        pilares: [get('numeric_mm2a5jw1'), get('numeric_mm2a491h'), get('numeric_mm2ahctn'), get('numeric_mm2aca3v')],
+        bloqueio: latest.column_values.find(c=>c.id==='text_mm2a8rpx')?.text || ''
+      };
+    }
+    if(!sd){el.innerHTML='<div class="hist-empty">Score não disponível.</div>';return;}
+  const pct=scorePct(sd.score);
+  const statusTxt=sd.score>=9?'Excelência — 20%':sd.score>=8?'Consistente — 15%':sd.score>=7?'Elegível — 10%':sd.score>=6?'Suspenso':'Sem comissão';
+  const sc=sd.score>=7?'var(--green)':sd.score>=6?'var(--amber)':'var(--danger)';
+  const pilares=['Qualidade Estratégica','Eficiência Operacional','Rentabilidade','Relação c/ Cliente'];
+  const pesos=['30%','25%','25%','20%'];
+  const totalAcc=(hist[me.name]||[]).reduce((s,e)=>s+e.acc,0);
+  el.innerHTML=`
+    <div class="score-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div>
+          <div style="font-size:52px;font-weight:900;line-height:1;color:${sc}">${sd.score.toFixed(1)}</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${sc};margin-top:4px">${statusTxt}</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Score · Abril 2026 · compilado por Julia</div>
+        </div>
+        ${totalAcc>0?`<div style="text-align:right"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px">Total comissões lançadas</div><div style="font-size:22px;font-weight:900;color:var(--green)">${brl(totalAcc)}</div></div>`:''}
+      </div>
+      <div class="sc-pilares">
+        ${pilares.map((p,i)=>`<div class="scp"><div class="scp-lbl">${p}</div><div class="scp-val" style="color:${sd.pilares[i]>=8?'var(--green)':sd.pilares[i]>=7?'var(--amber)':'var(--danger)'}">${sd.pilares[i].toFixed(1)}</div><div class="scp-peso">${pesos[i]}</div></div>`).join('')}
+      </div>
+      ${sd.bloqueio
+        ?`<div style="background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--rl);padding:14px 18px;margin-top:14px"><div style="font-size:10px;font-weight:700;color:var(--danger);text-transform:uppercase;margin-bottom:3px">Bloqueio ativo</div><div style="font-size:11px;color:var(--danger)">${sd.bloqueio}</div></div>`
+        :`<div class="comissao-box"><div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:3px">% comissão sobre extras</div><div style="font-size:11px;color:var(--green)">Score ${sd.score.toFixed(1)} → ${Math.round(pct*100)}% da base</div></div><div style="font-size:26px;font-weight:900;color:var(--green)">${Math.round(pct*100)}%</div></div>`
+      }
+    </div>
+    <div class="score-tabela">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:10px;font-weight:700">Tabela de referência</div>
+      ${[['< 6,0',0,6,'var(--danger)'],['6,0 – 6,9',6,7,'var(--text-muted)'],['7,0 – 7,9',7,8,'var(--amber)'],['8,0 – 8,9',8,9,'var(--amber)'],['9,0 – 10',9,11,'var(--green)']].map(r=>{
+        const hl=sd.score>=r[1]&&sd.score<r[2];
+        return`<div class="st-row${hl?' hl':''}">
+          <div style="font-size:12px;font-weight:600;color:var(--text)">${r[0]}</div>
+          <div style="font-size:18px;font-weight:900;color:${r[3]}">${r[1]===0?'0%':r[1]===6?'0%*':r[1]===7?'10%':r[1]===8?'15%':'20%'}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+
+function clearFilters(){
+  ['gf-account','gf-cliente','gf-tipo','gf-impacto','gf-periodo'].forEach(id=>{
+    document.getElementById(id).selectedIndex=0;
+  });
+  renderGestao();
+}
+
+function renderGestao(){
+  const fAcc = document.getElementById('gf-account')?.value||'';
+  const fCli = document.getElementById('gf-cliente')?.value||'';
+  const fTip = document.getElementById('gf-tipo')?.value||'';
+  const fImp = document.getElementById('gf-impacto')?.value||'';
+  const fPer = document.getElementById('gf-periodo')?.value||'';
+
+  let entries = getAllEntries();
+
+  // apply filters
+  if(fAcc) entries = entries.filter(e=>e.account===fAcc);
+  if(fCli) entries = entries.filter(e=>e.cliente===fCli);
+  if(fTip) entries = entries.filter(e=>e.tipo===fTip);
+  if(fImp) entries = entries.filter(e=>e.impacto===fImp);
+  if(fPer) entries = entries.filter(e=>{
+    if(!e.date) return false;
+    const parts = e.date.split('/');
+    return (parts[1]+'/'+parts[2]) === fPer || e.date.includes(fPer.split('/')[0]+'/'+fPer.split('/')[1]);
+  });
+
+  // KPI totals
+  const totBudget = entries.reduce((s,e)=>s+(e.b||0),0);
+  const totBase   = entries.reduce((s,e)=>s+(e.base||0),0);
+  const totAcc    = entries.reduce((s,e)=>s+(e.acc||0),0);
+  const totStake  = entries.reduce((s,e)=>s+(e.stakeVal||0),0);
+  const totTgt    = entries.reduce((s,e)=>s+(e.tgt||0),0);
+
+  document.getElementById('gestao-kpis').innerHTML = [
+    {l:'Budget total',v:brl(totBudget),s:''},
+    {l:'Base de comissão',v:brl(totBase),s:totBudget>0?Math.round(totBase/totBudget*100)+'% do budget':''},
+    {l:'Comissão accounts',v:brl(totAcc),c:'var(--green)',s:totBase>0?Math.round(totAcc/totBase*100)+'% da base':''},
+    {l:'Comissão stakeholders',v:brl(totStake),s:''},
+    {l:'Margem TGT',v:brl(totTgt),c:'var(--green)',s:totBudget>0?Math.round(totTgt/totBudget*100)+'% do budget':''},
+  ].map(k=>`
+    <div style="background:var(--surface2);border-radius:var(--rl);padding:14px;text-align:center">
+      <div style="font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">${k.l}</div>
+      <div style="font-size:16px;font-weight:900;color:${k.c||'var(--text)'};">${k.v}</div>
+      ${k.s?`<div style="font-size:9px;color:var(--text-muted);margin-top:2px">${k.s}</div>`:''}
+    </div>`).join('');
+
+  // Chart by account
+  const byAcc = {};
+  entries.forEach(e=>{ byAcc[e.account]=(byAcc[e.account]||0)+(e.acc||0); });
+  const maxAcc = Math.max(...Object.values(byAcc),1);
+  const accColors = {Caio:'#ED1C24',Marina:'#f87171',Amanda:'#60a5fa',Luiza:'#4ade80',Camilla:'#fbbf24'};
+  document.getElementById('chart-account').innerHTML = Object.entries(byAcc).sort((a,b)=>b[1]-a[1]).map(([name,val])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:80px;font-size:11px;font-weight:600;color:var(--text);flex-shrink:0">${name}</div>
+      <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(val/maxAcc*100)}%;background:${accColors[name]||'#ED1C24'};border-radius:4px"></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--green);min-width:80px;text-align:right">${brl(val)}</div>
+    </div>`).join('') || '<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Sem dados</div>';
+
+  // Chart by client
+  const byCli = {};
+  entries.forEach(e=>{ byCli[e.cliente]=(byCli[e.cliente]||0)+(e.b||0); });
+  const maxCli = Math.max(...Object.values(byCli),1);
+  document.getElementById('chart-cliente').innerHTML = Object.entries(byCli).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name,val])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:120px;font-size:10px;font-weight:600;color:var(--text);flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${name}</div>
+      <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${Math.round(val/maxCli*100)}%;background:#60a5fa;border-radius:4px"></div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--text);min-width:72px;text-align:right">${brl(val)}</div>
+    </div>`).join('') || '<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Sem dados</div>';
+
+  // Table
+  const ths = ['Projeto','Account','Cliente','Tipo','Impacto','Data','Budget','Base','Comissão','Stake','Margem TGT','Monday #'];
+  document.getElementById('gestao-thead').innerHTML = ths.map(h=>
+    `<th style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:9px 10px;text-align:right;font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap">${h}</th>`
+  ).join('').replace('<th style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:9px 10px;text-align:right;font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap">Projeto</th>',
+    '<th style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);padding:9px 10px;text-align:left;font-weight:500;border-bottom:1px solid var(--border)">Projeto</th>');
+
+  document.getElementById('gestao-count').textContent = entries.length + ' lançamento(s)';
+
+  if(!entries.length){
+    document.getElementById('gestao-tbody').innerHTML = '<tr><td colspan="12" style="text-align:center;padding:32px;color:var(--text-muted);font-size:12px">Nenhum lançamento com esses filtros</td></tr>';
+  } else {
+    const impCol = {Alto:'var(--danger)',Médio:'var(--amber)',Baixo:'var(--text-muted)'};
+    document.getElementById('gestao-tbody').innerHTML = entries.map((e,i)=>`
+      <tr style="border-bottom:1px solid var(--border);${i%2===0?'background:rgba(255,255,255,0.01)':''}">
+        <td style="font-size:11px;padding:9px 10px;font-weight:600;color:var(--text)">${e.nome||'—'}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-muted)">${e.account}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--info)">${e.cliente}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-muted)">${e.tipo}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:${impCol[e.impacto]||'var(--text-muted)'};">${e.impacto}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-muted)">${e.date||'—'}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;font-weight:600">${brl(e.b)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right">${brl(e.base)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--green);font-weight:700">${brl(e.acc)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right">${brl(e.stakeVal||0)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--green);font-weight:700">${brl(e.tgt)}</td>
+        <td style="font-size:11px;padding:9px 10px;text-align:right;color:var(--text-dim)">${e.id||'—'}</td>
+      </tr>`).join('');
+  }
+
+  // Totals row by account
+  const accs = ['Caio','Marina','Amanda','Luiza','Camilla'];
+  const totals = accs.map(a=>{
+    const ae = entries.filter(e=>e.account===a);
+    return {a, b:ae.reduce((s,e)=>s+(e.b||0),0), acc:ae.reduce((s,e)=>s+(e.acc||0),0), tgt:ae.reduce((s,e)=>s+(e.tgt||0),0), n:ae.length};
+  }).filter(t=>t.n>0);
+
+  if(totals.length>1){
+    document.getElementById('gestao-totals').innerHTML = `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:12px">Resumo por account</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+          ${totals.map(t=>`
+            <div style="background:var(--surface2);border-radius:var(--r);padding:12px;border-left:3px solid ${accColors[t.a]||'#ED1C24'}">
+              <div style="font-size:11px;font-weight:800;color:var(--text);margin-bottom:6px">${t.a}</div>
+              <div style="font-size:10px;color:var(--text-muted)">Budget: <span style="color:var(--text);font-weight:600">${brl(t.b)}</span></div>
+              <div style="font-size:10px;color:var(--text-muted)">Comissão: <span style="color:var(--green);font-weight:700">${brl(t.acc)}</span></div>
+              <div style="font-size:10px;color:var(--text-muted)">Margem TGT: <span style="color:var(--green);font-weight:700">${brl(t.tgt)}</span></div>
+              <div style="font-size:9px;color:var(--text-dim);margin-top:4px">${t.n} projeto(s)</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  } else {
+    document.getElementById('gestao-totals').innerHTML='';
+  }
+}
+
+
+let currentScoreItemId = null;
+
+function updateScorePreview(){
+  const p1=parseFloat(document.getElementById('sadm-p1').value)||0;
+  const p2=parseFloat(document.getElementById('sadm-p2').value)||0;
+  const p3=parseFloat(document.getElementById('sadm-p3').value)||0;
+  const p4=parseFloat(document.getElementById('sadm-p4').value)||0;
+  document.getElementById('sadm-p1-val').textContent=p1.toFixed(1);
+  document.getElementById('sadm-p2-val').textContent=p2.toFixed(1);
+  document.getElementById('sadm-p3-val').textContent=p3.toFixed(1);
+  document.getElementById('sadm-p4-val').textContent=p4.toFixed(1);
+  const score = p1*0.30 + p2*0.25 + p3*0.25 + p4*0.20;
+  const pct = score>=9?20:score>=8?15:score>=7?10:0;
+  const status = score>=9?'Excelência':score>=8?'Consistente':score>=7?'Elegível':score>=6?'Suspenso':'Sem comissão';
+  const col = score>=7?'var(--green)':score>=6?'var(--amber)':'var(--danger)';
+  const sf = document.getElementById('sadm-score-final');
+  sf.textContent=score.toFixed(1);
+  sf.style.color=col;
+  document.getElementById('sadm-status').textContent=status;
+  document.getElementById('sadm-status').style.color=col;
+  document.getElementById('sadm-pct').textContent=pct+'%';
+  const acc=document.getElementById('sadm-account').value;
+  const mes=document.getElementById('sadm-mes').value;
+  document.getElementById('sadm-who').textContent=acc?(acc+' · '+mes):'—';
+}
+
+async function loadScoreAdm(){
+  const acc=document.getElementById('sadm-account').value;
+  const mes=document.getElementById('sadm-mes').value;
+  if(!acc){ return; }
+  document.getElementById('sadm-empty').style.display='none';
+  document.getElementById('sadm-form').style.display='block';
+  document.getElementById('sadm-hist').innerHTML='<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Carregando...</div>';
+  currentScoreItemId = null;
+  try {
+    const r = await fetch(MONDAY_PROXY,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query: `{ boards(ids:[${BOARD_SCORES}]){ items_page(limit:100){ items{ id name column_values{ id text value } } } } }` })
+    });
+    const data = await r.json();
+    const items = data?.data?.boards?.[0]?.items_page?.items||[];
+    const accItems = items.filter(i=>{
+      const a=i.column_values.find(c=>c.id==='text_mm2ahpp1');
+      return a && a.text===acc;
+    }).sort((a,b)=>b.id-a.id);
+    const thisMonth = accItems.find(i=>{
+      const m=i.column_values.find(c=>c.id==='text_mm2av3p7');
+      return m && m.text===mes;
+    });
+    if(thisMonth){
+      currentScoreItemId = thisMonth.id;
+      const get=id=>parseFloat(thisMonth.column_values.find(c=>c.id===id)?.text||0);
+      const blk=thisMonth.column_values.find(c=>c.id==='text_mm2a8rpx')?.text||'';
+      const obs=thisMonth.column_values.find(c=>c.id==='text_mm2aga7z')?.text||'';
+      document.getElementById('sadm-p1').value=get('numeric_mm2a5jw1');
+      document.getElementById('sadm-p2').value=get('numeric_mm2a491h');
+      document.getElementById('sadm-p3').value=get('numeric_mm2ahctn');
+      document.getElementById('sadm-p4').value=get('numeric_mm2aca3v');
+      document.getElementById('sadm-bloqueio').value=blk;
+      document.getElementById('sadm-obs').value=obs;
+      updateScorePreview();
+    } else {
+      ['sadm-p1','sadm-p2','sadm-p3','sadm-p4'].forEach(id=>document.getElementById(id).value=0);
+      document.getElementById('sadm-bloqueio').value='';
+      document.getElementById('sadm-obs').value='';
+      updateScorePreview();
+    }
+    const histHtml = accItems.length ? accItems.map(item=>{
+      const get=id=>parseFloat(item.column_values.find(c=>c.id===id)?.text||0);
+      const mes2=item.column_values.find(c=>c.id==='text_mm2av3p7')?.text||'—';
+      const sf=get('numeric_mm2adftd');
+      const pct2=sf>=9?20:sf>=8?15:sf>=7?10:0;
+      const col2=sf>=7?'var(--green)':sf>=6?'var(--amber)':'var(--danger)';
+      const blk2=item.column_values.find(c=>c.id==='text_mm2a8rpx')?.text||'';
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--text);width:80px">${mes2}</div>
+        <div style="font-size:28px;font-weight:900;color:${col2};width:60px">${sf.toFixed(1)}</div>
+        <div style="flex:1">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${['numeric_mm2a5jw1','numeric_mm2a491h','numeric_mm2ahctn','numeric_mm2aca3v'].map((id,i)=>{
+              const labels=['P1','P2','P3','P4'];
+              const v=get(id);
+              return `<span style="font-size:10px;background:var(--surface2);padding:2px 8px;border-radius:4px;color:${v>=8?'var(--green)':v>=6?'var(--amber)':'var(--danger)'}">${labels[i]}: ${v.toFixed(1)}</span>`;
+            }).join('')}
+          </div>
+          ${blk2?`<div style="font-size:10px;color:var(--danger);margin-top:4px">⚠ ${blk2}</div>`:''}
+        </div>
+        <div style="font-size:18px;font-weight:900;color:var(--green);width:40px">${pct2}%</div>
+        <button onclick="editScore('${item.id}','${acc}','${mes2}')" style="font-size:9px;padding:5px 10px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--text-muted);cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Editar</button>
+      </div>`;
+    }).join('') : '<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Nenhum score registrado ainda para este account.</div>';
+    document.getElementById('sadm-hist').innerHTML = histHtml;
+  } catch(e) {
+    document.getElementById('sadm-hist').innerHTML='<div style="color:var(--danger);font-size:11px">Erro: '+e.message+'</div>';
+  }
+}
+
+function editScore(itemId, acc, mes){
+  currentScoreItemId = itemId;
+  document.getElementById('sadm-account').value = acc;
+  document.getElementById('sadm-mes').value = mes;
+  loadScoreAdm();
+  window.scrollTo(0,0);
+}
+
+async function saveScore(){
+  const acc=document.getElementById('sadm-account').value;
+  const mes=document.getElementById('sadm-mes').value;
+  if(!acc){ alert('Selecione um account'); return; }
+  const p1=parseFloat(document.getElementById('sadm-p1').value)||0;
+  const p2=parseFloat(document.getElementById('sadm-p2').value)||0;
+  const p3=parseFloat(document.getElementById('sadm-p3').value)||0;
+  const p4=parseFloat(document.getElementById('sadm-p4').value)||0;
+  const score = parseFloat((p1*0.30+p2*0.25+p3*0.25+p4*0.20).toFixed(2));
+  const pct = score>=9?20:score>=8?15:score>=7?10:0;
+  const blk = document.getElementById('sadm-bloqueio').value;
+  const obs = document.getElementById('sadm-obs').value;
+  const btn=document.getElementById('sadm-save-btn');
+  btn.disabled=true;
+  const toast=document.getElementById('sadm-toast');
+  toast.className='toast load'; toast.textContent='Salvando no Monday...'; toast.style.display='block';
+  const colVals = JSON.stringify({
+    "text_mm2ahpp1": acc,
+    "text_mm2av3p7": mes,
+    "numeric_mm2a5jw1": p1,
+    "numeric_mm2a491h": p2,
+    "numeric_mm2ahctn": p3,
+    "numeric_mm2aca3v": p4,
+    "numeric_mm2adftd": score,
+    "numeric_mm2az92s": pct,
+    "text_mm2a8rpx": blk,
+    "text_mm2aga7z": obs || ('Avaliado por '+me.name+' em '+new Date().toLocaleDateString('pt-BR'))
+  });
+  try {
+    let query;
+    if(currentScoreItemId){
+      query = `mutation { change_multiple_column_values(board_id: ${BOARD_SCORES}, item_id: ${currentScoreItemId}, column_values: ${JSON.stringify(colVals)}) { id } }`;
+    } else {
+      query = `mutation { create_item(board_id: ${BOARD_SCORES}, item_name: "${acc} — ${mes}", column_values: ${JSON.stringify(colVals)}) { id } }`;
+    }
+    const r = await fetch(MONDAY_PROXY,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({query})
+    });
+    const data = await r.json();
+    if(data.errors) throw new Error(data.errors[0].message);
+    toast.className='toast ok';
+    toast.textContent='Score de '+acc+' ('+mes+') salvo! Score: '+score.toFixed(1)+' → '+pct+'% comissão';
+    setTimeout(()=>{ toast.style.display='none'; loadScoreAdm(); }, 3000);
+  } catch(e) {
+    toast.className='toast err'; toast.textContent='Erro: '+e.message;
+  }
+  btn.disabled=false;
+}
+
+async function renderScoreAdm(){
+  const el=document.getElementById('pane-scoreadm');
+  document.getElementById('sadm-empty').style.display='block';
+  document.getElementById('sadm-form').style.display='none';
+  updateScorePreview();
+}
+
+function getAllEntries(){
+  const all=[];
+  Object.values(hist).forEach(arr=>all.push(...arr));
+  return all;
+}
+
+</script>
+</body>
+</html>
