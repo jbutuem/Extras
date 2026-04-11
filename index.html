@@ -223,6 +223,7 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
     <button class="tab-btn" onclick="showTab('score',this)">Score</button>
     <button class="tab-btn" onclick="showTab('politica',this)">Política</button>
     <button class="tab-btn" id="tab-gestao" style="display:none" onclick="showTab('gestao',this)">Gestão ADM</button>
+    <button class="tab-btn" id="tab-score-adm" style="display:none" onclick="showTab('scoreadm',this)">Score ADM</button>
   </div>
   <div class="main">
 
@@ -529,7 +530,147 @@ select.fi-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xml
 
       <!-- TOTALS -->
       <div id="gestao-totals" style="margin-top:14px"></div>
+
     </div><!-- /pane-gestao -->
+
+    <!-- SCORE ADM -->
+    <div class="tab-pane" id="pane-scoreadm">
+      <div class="sec-label">Aplicar score mensal</div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px;margin-bottom:18px">
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end">
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Account</div>
+            <select class="fi-inp" id="sadm-account" onchange="loadScoreAdm()">
+              <option value="">Selecione...</option>
+              <option>Caio</option><option>Marina</option><option>Amanda</option><option>Luiza</option><option>Camilla</option>
+            </select>
+          </div>
+          <div>
+            <div class="fi-label" style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:5px;display:block">Mês/Ano</div>
+            <select class="fi-inp" id="sadm-mes">
+              <option>04/2026</option><option>05/2026</option><option>06/2026</option>
+              <option>07/2026</option><option>08/2026</option><option>09/2026</option>
+              <option>10/2026</option><option>11/2026</option><option>12/2026</option>
+            </select>
+          </div>
+          <button class="sub-btn" style="padding:10px 16px;font-size:9px" onclick="loadScoreAdm()">Carregar</button>
+        </div>
+      </div>
+
+      <div id="sadm-form" style="display:none">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px;margin-bottom:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:16px">Pilares — nota de 0 a 10</div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P1 — Qualidade Estratégica</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 30%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">Briefings completos · classificação de impacto · direcionamentos ao cliente</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p1" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p1-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P2 — Eficiência Operacional</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 25%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">Aderência de horas · retrabalho · prazos · qualidade Monday</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p2" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p2-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P3 — Rentabilidade</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 25%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">Horas adicionais aplicadas · captura de oportunidades extras</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p3" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p3-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <label class="fi-label" style="margin-bottom:0;font-size:11px;font-weight:600;color:var(--text);text-transform:none;letter-spacing:0">P4 — Relação com Cliente</label>
+                <span style="font-size:10px;color:var(--text-muted)">Peso 20%</span>
+              </div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px">NPS · tempo de resposta · evolução estratégica do cliente</div>
+              <input type="range" min="0" max="10" step="0.5" value="0" id="sadm-p4" oninput="updateScorePreview()" style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+                <span style="font-size:9px;color:var(--text-muted)">0</span>
+                <span style="font-size:18px;font-weight:900;color:var(--red)" id="sadm-p4-val">0</span>
+                <span style="font-size:9px;color:var(--text-muted)">10</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+            <div>
+              <label class="fi-label">Bloqueio ativo (opcional)</label>
+              <select class="fi-inp" id="sadm-bloqueio">
+                <option value="">Nenhum</option>
+                <option value="Cancelamento por performance — comissão bloqueada">Cancelamento por performance</option>
+                <option value="Cliente inadimplente — comissão suspensa até regularização">Inadimplência do cliente</option>
+                <option value="Retrabalho &gt; 20% — bônus zerado">Retrabalho excessivo (&gt;20%)</option>
+                <option value="Estouro de horas sem controle — bônus zerado">Estouro de horas sem controle</option>
+              </select>
+            </div>
+            <div>
+              <label class="fi-label">Observações para o account</label>
+              <input class="fi-inp" type="text" id="sadm-obs" placeholder="Ex: Melhorar briefings no cliente X">
+            </div>
+          </div>
+
+          <div id="sadm-preview" style="background:var(--surface2);border-radius:var(--rl);padding:16px;margin-bottom:16px">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center">
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">Score final</div>
+                <div style="font-size:36px;font-weight:900" id="sadm-score-final" style="color:var(--text-muted)">0,0</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">Status</div>
+                <div style="font-size:14px;font-weight:700;margin-top:8px" id="sadm-status">—</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">% comissão</div>
+                <div style="font-size:36px;font-weight:900;color:var(--green)" id="sadm-pct">0%</div>
+              </div>
+              <div>
+                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px">Avaliando</div>
+                <div style="font-size:14px;font-weight:700;color:var(--red);margin-top:8px" id="sadm-who">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px;align-items:center">
+            <button class="sub-btn" id="sadm-save-btn" onclick="saveScore()">Salvar Score no Monday</button>
+            <span style="font-size:10px;color:var(--text-muted)">O account verá o score atualizado imediatamente</span>
+          </div>
+          <div class="toast" id="sadm-toast"></div>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:16px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);font-weight:700;margin-bottom:12px">Histórico de scores do account</div>
+          <div id="sadm-hist"></div>
+        </div>
+      </div>
+
+      <div id="sadm-empty" style="text-align:center;padding:48px 0;color:var(--text-muted);font-size:12px">Selecione um account e clique em Carregar para avaliar.</div>
+    </div><!-- /pane-scoreadm -->
+
 
   </div>
 </div>
@@ -580,8 +721,15 @@ function doLogin(){
   document.getElementById('tb-team').textContent = me.team;
   calcPrev(); renderHist(); renderScore();
   const tabG = document.getElementById('tab-gestao');
-  if(me.admin){ tabG.style.display='block'; showTab('gestao', tabG); }
-  else { tabG.style.display='none'; }
+  const tabS = document.getElementById('tab-score-adm');
+  if(me.admin){
+    tabG.style.display='block';
+    tabS.style.display='block';
+    showTab('gestao', tabG);
+  } else {
+    tabG.style.display='none';
+    tabS.style.display='none';
+  }
 }
 
 function doLogout(){
@@ -604,6 +752,7 @@ function showTab(id, btn){
   if(id==='historico') renderHist();
   if(id==='score') renderScore();
   if(id==='gestao') renderGestao();
+  if(id==='scoreadm') renderScoreAdm();
 }
 
 function scorePct(s){ return s>=9?.20:s>=8?.15:s>=7?.10:0 }
@@ -689,6 +838,16 @@ async function submitExtra(){
     const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
     if(!hist[me.name]) hist[me.name]=[];
     hist[me.name].unshift(entry);
+    // Save to Monday-backed history via /api/monday
+    const histQuery = JSON.stringify({
+      query: `mutation { create_item(board_id: ${BOARD_EXTRAS}, item_name: "HIST·${me.name}·${new Date().toLocaleDateString('pt-BR')}·${nome.replace(/"/g,"'")}",
+        column_values: "{\"text_mm29nem0\":\"${cliente}\",\"text_mm29t49x\":\"${(stake||(op==='prod'?'Amanda (coord. PROD)':'-')).replace(/"/g,"'")}\",\"numeric_mm29gd14\":${b},\"numeric_mm293aw7\":${ct},\"numeric_mm29457g\":${cd},\"numeric_mm29v6ms\":${Math.round(base)},\"numeric_mm29ht36\":${Math.round(acc)},\"numeric_mm29zmyy\":${Math.round(op==='prod'?amanda:stakeVal)},\"numeric_mm29xf9\":${Math.round(tgt)}}"
+      ) { id } }`
+    });
+    // Also save locally as backup
+    const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
+    if(!hist[me.name]) hist[me.name]=[];
+    hist[me.name].unshift(entry);
     localStorage.setItem('tgt_hist',JSON.stringify(hist));
     showToast('Lançado! Item #'+mid+' criado no Monday.','ok');
     resetForm();
@@ -730,10 +889,32 @@ function renderHist(){
     </div>`).join('');
 }
 
-function renderScore(){
+async function renderScore(){
   const el=document.getElementById('score-view');
-  const sd=SCORE_DATA[me?.name];
-  if(!sd){el.innerHTML='<div class="hist-empty">Score não disponível.</div>';return;}
+  el.innerHTML='<div class="hist-empty">Carregando score do Monday...</div>';
+  try {
+    const r = await fetch(MONDAY_PROXY, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query: `{ boards(ids: [${BOARD_SCORES}]) { items_page(limit: 50) { items { id name column_values { id text value } } } } }` })
+    });
+    const data = await r.json();
+    const items = data?.data?.boards?.[0]?.items_page?.items || [];
+    // Find latest score for current account
+    const myItems = items.filter(i => {
+      const accCol = i.column_values.find(c=>c.id==='text_mm2ahpp1');
+      return accCol && accCol.text === me.name;
+    }).sort((a,b) => b.id - a.id);
+    const latest = myItems[0];
+    let sd = SCORE_DATA[me.name]; // fallback to static
+    if(latest) {
+      const get = (id) => parseFloat(latest.column_values.find(c=>c.id===id)?.text||0);
+      sd = {
+        score: get('numeric_mm2adftd') || SCORE_DATA[me.name]?.score || 0,
+        pilares: [get('numeric_mm2a5jw1'), get('numeric_mm2a491h'), get('numeric_mm2ahctn'), get('numeric_mm2aca3v')],
+        bloqueio: latest.column_values.find(c=>c.id==='text_mm2a8rpx')?.text || ''
+      };
+    }
+    if(!sd){el.innerHTML='<div class="hist-empty">Score não disponível.</div>';return;}
   const pct=scorePct(sd.score);
   const statusTxt=sd.score>=9?'Excelência — 20%':sd.score>=8?'Consistente — 15%':sd.score>=7?'Elegível — 10%':sd.score>=6?'Suspenso':'Sem comissão';
   const sc=sd.score>=7?'var(--green)':sd.score>=6?'var(--amber)':'var(--danger)';
@@ -770,11 +951,6 @@ function renderScore(){
     </div>`;
 }
 
-function getAllEntries(){
-  const all = [];
-  Object.values(hist).forEach(arr => all.push(...arr));
-  return all;
-}
 
 function clearFilters(){
   ['gf-account','gf-cliente','gf-tipo','gf-impacto','gf-periodo'].forEach(id=>{
@@ -905,6 +1081,175 @@ function renderGestao(){
   } else {
     document.getElementById('gestao-totals').innerHTML='';
   }
+}
+
+
+let currentScoreItemId = null;
+
+function updateScorePreview(){
+  const p1=parseFloat(document.getElementById('sadm-p1').value)||0;
+  const p2=parseFloat(document.getElementById('sadm-p2').value)||0;
+  const p3=parseFloat(document.getElementById('sadm-p3').value)||0;
+  const p4=parseFloat(document.getElementById('sadm-p4').value)||0;
+  document.getElementById('sadm-p1-val').textContent=p1.toFixed(1);
+  document.getElementById('sadm-p2-val').textContent=p2.toFixed(1);
+  document.getElementById('sadm-p3-val').textContent=p3.toFixed(1);
+  document.getElementById('sadm-p4-val').textContent=p4.toFixed(1);
+  const score = p1*0.30 + p2*0.25 + p3*0.25 + p4*0.20;
+  const pct = score>=9?20:score>=8?15:score>=7?10:0;
+  const status = score>=9?'Excelência':score>=8?'Consistente':score>=7?'Elegível':score>=6?'Suspenso':'Sem comissão';
+  const col = score>=7?'var(--green)':score>=6?'var(--amber)':'var(--danger)';
+  const sf = document.getElementById('sadm-score-final');
+  sf.textContent=score.toFixed(1);
+  sf.style.color=col;
+  document.getElementById('sadm-status').textContent=status;
+  document.getElementById('sadm-status').style.color=col;
+  document.getElementById('sadm-pct').textContent=pct+'%';
+  const acc=document.getElementById('sadm-account').value;
+  const mes=document.getElementById('sadm-mes').value;
+  document.getElementById('sadm-who').textContent=acc?(acc+' · '+mes):'—';
+}
+
+async function loadScoreAdm(){
+  const acc=document.getElementById('sadm-account').value;
+  const mes=document.getElementById('sadm-mes').value;
+  if(!acc){ return; }
+  document.getElementById('sadm-empty').style.display='none';
+  document.getElementById('sadm-form').style.display='block';
+  document.getElementById('sadm-hist').innerHTML='<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Carregando...</div>';
+  currentScoreItemId = null;
+  try {
+    const r = await fetch(MONDAY_PROXY,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query: `{ boards(ids:[${BOARD_SCORES}]){ items_page(limit:100){ items{ id name column_values{ id text value } } } } }` })
+    });
+    const data = await r.json();
+    const items = data?.data?.boards?.[0]?.items_page?.items||[];
+    const accItems = items.filter(i=>{
+      const a=i.column_values.find(c=>c.id==='text_mm2ahpp1');
+      return a && a.text===acc;
+    }).sort((a,b)=>b.id-a.id);
+    const thisMonth = accItems.find(i=>{
+      const m=i.column_values.find(c=>c.id==='text_mm2av3p7');
+      return m && m.text===mes;
+    });
+    if(thisMonth){
+      currentScoreItemId = thisMonth.id;
+      const get=id=>parseFloat(thisMonth.column_values.find(c=>c.id===id)?.text||0);
+      const blk=thisMonth.column_values.find(c=>c.id==='text_mm2a8rpx')?.text||'';
+      const obs=thisMonth.column_values.find(c=>c.id==='text_mm2aga7z')?.text||'';
+      document.getElementById('sadm-p1').value=get('numeric_mm2a5jw1');
+      document.getElementById('sadm-p2').value=get('numeric_mm2a491h');
+      document.getElementById('sadm-p3').value=get('numeric_mm2ahctn');
+      document.getElementById('sadm-p4').value=get('numeric_mm2aca3v');
+      document.getElementById('sadm-bloqueio').value=blk;
+      document.getElementById('sadm-obs').value=obs;
+      updateScorePreview();
+    } else {
+      ['sadm-p1','sadm-p2','sadm-p3','sadm-p4'].forEach(id=>document.getElementById(id).value=0);
+      document.getElementById('sadm-bloqueio').value='';
+      document.getElementById('sadm-obs').value='';
+      updateScorePreview();
+    }
+    const histHtml = accItems.length ? accItems.map(item=>{
+      const get=id=>parseFloat(item.column_values.find(c=>c.id===id)?.text||0);
+      const mes2=item.column_values.find(c=>c.id==='text_mm2av3p7')?.text||'—';
+      const sf=get('numeric_mm2adftd');
+      const pct2=sf>=9?20:sf>=8?15:sf>=7?10:0;
+      const col2=sf>=7?'var(--green)':sf>=6?'var(--amber)':'var(--danger)';
+      const blk2=item.column_values.find(c=>c.id==='text_mm2a8rpx')?.text||'';
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--text);width:80px">${mes2}</div>
+        <div style="font-size:28px;font-weight:900;color:${col2};width:60px">${sf.toFixed(1)}</div>
+        <div style="flex:1">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            ${['numeric_mm2a5jw1','numeric_mm2a491h','numeric_mm2ahctn','numeric_mm2aca3v'].map((id,i)=>{
+              const labels=['P1','P2','P3','P4'];
+              const v=get(id);
+              return `<span style="font-size:10px;background:var(--surface2);padding:2px 8px;border-radius:4px;color:${v>=8?'var(--green)':v>=6?'var(--amber)':'var(--danger)'}">${labels[i]}: ${v.toFixed(1)}</span>`;
+            }).join('')}
+          </div>
+          ${blk2?`<div style="font-size:10px;color:var(--danger);margin-top:4px">⚠ ${blk2}</div>`:''}
+        </div>
+        <div style="font-size:18px;font-weight:900;color:var(--green);width:40px">${pct2}%</div>
+        <button onclick="editScore('${item.id}','${acc}','${mes2}')" style="font-size:9px;padding:5px 10px;background:none;border:1px solid var(--border);border-radius:5px;color:var(--text-muted);cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Editar</button>
+      </div>`;
+    }).join('') : '<div style="color:var(--text-muted);font-size:11px;padding:8px 0">Nenhum score registrado ainda para este account.</div>';
+    document.getElementById('sadm-hist').innerHTML = histHtml;
+  } catch(e) {
+    document.getElementById('sadm-hist').innerHTML='<div style="color:var(--danger);font-size:11px">Erro: '+e.message+'</div>';
+  }
+}
+
+function editScore(itemId, acc, mes){
+  currentScoreItemId = itemId;
+  document.getElementById('sadm-account').value = acc;
+  document.getElementById('sadm-mes').value = mes;
+  loadScoreAdm();
+  window.scrollTo(0,0);
+}
+
+async function saveScore(){
+  const acc=document.getElementById('sadm-account').value;
+  const mes=document.getElementById('sadm-mes').value;
+  if(!acc){ alert('Selecione um account'); return; }
+  const p1=parseFloat(document.getElementById('sadm-p1').value)||0;
+  const p2=parseFloat(document.getElementById('sadm-p2').value)||0;
+  const p3=parseFloat(document.getElementById('sadm-p3').value)||0;
+  const p4=parseFloat(document.getElementById('sadm-p4').value)||0;
+  const score = parseFloat((p1*0.30+p2*0.25+p3*0.25+p4*0.20).toFixed(2));
+  const pct = score>=9?20:score>=8?15:score>=7?10:0;
+  const blk = document.getElementById('sadm-bloqueio').value;
+  const obs = document.getElementById('sadm-obs').value;
+  const btn=document.getElementById('sadm-save-btn');
+  btn.disabled=true;
+  const toast=document.getElementById('sadm-toast');
+  toast.className='toast load'; toast.textContent='Salvando no Monday...'; toast.style.display='block';
+  const colVals = JSON.stringify({
+    "text_mm2ahpp1": acc,
+    "text_mm2av3p7": mes,
+    "numeric_mm2a5jw1": p1,
+    "numeric_mm2a491h": p2,
+    "numeric_mm2ahctn": p3,
+    "numeric_mm2aca3v": p4,
+    "numeric_mm2adftd": score,
+    "numeric_mm2az92s": pct,
+    "text_mm2a8rpx": blk,
+    "text_mm2aga7z": obs || ('Avaliado por '+me.name+' em '+new Date().toLocaleDateString('pt-BR'))
+  });
+  try {
+    let query;
+    if(currentScoreItemId){
+      query = `mutation { change_multiple_column_values(board_id: ${BOARD_SCORES}, item_id: ${currentScoreItemId}, column_values: ${JSON.stringify(colVals)}) { id } }`;
+    } else {
+      query = `mutation { create_item(board_id: ${BOARD_SCORES}, item_name: "${acc} — ${mes}", column_values: ${JSON.stringify(colVals)}) { id } }`;
+    }
+    const r = await fetch(MONDAY_PROXY,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({query})
+    });
+    const data = await r.json();
+    if(data.errors) throw new Error(data.errors[0].message);
+    toast.className='toast ok';
+    toast.textContent='Score de '+acc+' ('+mes+') salvo! Score: '+score.toFixed(1)+' → '+pct+'% comissão';
+    setTimeout(()=>{ toast.style.display='none'; loadScoreAdm(); }, 3000);
+  } catch(e) {
+    toast.className='toast err'; toast.textContent='Erro: '+e.message;
+  }
+  btn.disabled=false;
+}
+
+async function renderScoreAdm(){
+  const el=document.getElementById('pane-scoreadm');
+  document.getElementById('sadm-empty').style.display='block';
+  document.getElementById('sadm-form').style.display='none';
+  updateScorePreview();
+}
+
+function getAllEntries(){
+  const all=[];
+  Object.values(hist).forEach(arr=>all.push(...arr));
+  return all;
 }
 
 </script>
