@@ -719,7 +719,7 @@ function doLogin(){
   document.getElementById('tb-av').textContent = me.initials;
   document.getElementById('tb-name').textContent = me.name;
   document.getElementById('tb-team').textContent = me.team;
-  calcPrev(); renderHist(); renderScore();
+  calcPrev(); renderHist();
   const tabG = document.getElementById('tab-gestao');
   const tabS = document.getElementById('tab-score-adm');
   if(me.admin){
@@ -750,7 +750,7 @@ function showTab(id, btn){
   document.getElementById('pane-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='historico') renderHist();
-  if(id==='score') renderScore();
+  if(id==='score') renderScore().catch(e=>console.log('score err',e));
   if(id==='gestao') renderGestao();
   if(id==='scoreadm') renderScoreAdm();
 }
@@ -838,14 +838,7 @@ async function submitExtra(){
     const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
     if(!hist[me.name]) hist[me.name]=[];
     hist[me.name].unshift(entry);
-    // Save to Monday-backed history via /api/monday
-    const histQuery = JSON.stringify({
-      query: `mutation { create_item(board_id: ${BOARD_EXTRAS}, item_name: "HIST·${me.name}·${new Date().toLocaleDateString('pt-BR')}·${nome.replace(/"/g,"'")}",
-        column_values: "{\"text_mm29nem0\":\"${cliente}\",\"text_mm29t49x\":\"${(stake||(op==='prod'?'Amanda (coord. PROD)':'-')).replace(/"/g,"'")}\",\"numeric_mm29gd14\":${b},\"numeric_mm293aw7\":${ct},\"numeric_mm29457g\":${cd},\"numeric_mm29v6ms\":${Math.round(base)},\"numeric_mm29ht36\":${Math.round(acc)},\"numeric_mm29zmyy\":${Math.round(op==='prod'?amanda:stakeVal)},\"numeric_mm29xf9\":${Math.round(tgt)}}"
-      ) { id } }`
-    });
-    // Also save locally as backup
-    const entry={id:mid,nome,cliente,tipo,impacto,b,ct,cd,base:Math.round(base),acc:Math.round(acc),stakeVal:Math.round(op==='prod'?amanda:stakeVal),tgt:Math.round(tgt),op,stake,obs,account:me.name,date:new Date().toLocaleDateString('pt-BR')};
+    // Save locally as backup
     if(!hist[me.name]) hist[me.name]=[];
     hist[me.name].unshift(entry);
     localStorage.setItem('tgt_hist',JSON.stringify(hist));
@@ -891,35 +884,35 @@ function renderHist(){
 
 async function renderScore(){
   const el=document.getElementById('score-view');
-  el.innerHTML='<div class="hist-empty">Carregando score do Monday...</div>';
+  if(!el) return;
+  el.innerHTML='<div class="hist-empty" style="padding:20px 0">Carregando score...</div>';
+  const pilares=['Qualidade Estratégica','Eficiência Operacional','Rentabilidade','Relação c/ Cliente'];
+  const pesos=['30%','25%','25%','20%'];
+  let sd = SCORE_DATA[me?.name] || {score:0,pilares:[0,0,0,0],bloqueio:''};
   try {
-    const r = await fetch(MONDAY_PROXY, {
+    const r = await fetch(MONDAY_PROXY,{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ query: `{ boards(ids: [${BOARD_SCORES}]) { items_page(limit: 50) { items { id name column_values { id text value } } } } }` })
+      body: JSON.stringify({query:`{ boards(ids:[${BOARD_SCORES}]){ items_page(limit:50){ items{ id name column_values{ id text } } } } }`})
     });
     const data = await r.json();
-    const items = data?.data?.boards?.[0]?.items_page?.items || [];
-    // Find latest score for current account
-    const myItems = items.filter(i => {
-      const accCol = i.column_values.find(c=>c.id==='text_mm2ahpp1');
-      return accCol && accCol.text === me.name;
-    }).sort((a,b) => b.id - a.id);
-    const latest = myItems[0];
-    let sd = SCORE_DATA[me.name]; // fallback to static
-    if(latest) {
-      const get = (id) => parseFloat(latest.column_values.find(c=>c.id===id)?.text||0);
-      sd = {
-        score: get('numeric_mm2adftd') || SCORE_DATA[me.name]?.score || 0,
-        pilares: [get('numeric_mm2a5jw1'), get('numeric_mm2a491h'), get('numeric_mm2ahctn'), get('numeric_mm2aca3v')],
-        bloqueio: latest.column_values.find(c=>c.id==='text_mm2a8rpx')?.text || ''
+    const items = data?.data?.boards?.[0]?.items_page?.items||[];
+    const myItems = items.filter(i=>{
+      const a=i.column_values.find(c=>c.id==='text_mm2ahpp1');
+      return a && a.text===me.name;
+    }).sort((a,b)=>b.id-a.id);
+    if(myItems[0]){
+      const latest=myItems[0];
+      const get=id=>parseFloat(latest.column_values.find(c=>c.id===id)?.text||0);
+      sd={
+        score: get('numeric_mm2adftd')||sd.score,
+        pilares:[get('numeric_mm2a5jw1'),get('numeric_mm2a491h'),get('numeric_mm2ahctn'),get('numeric_mm2aca3v')],
+        bloqueio: latest.column_values.find(c=>c.id==='text_mm2a8rpx')?.text||''
       };
     }
-    if(!sd){el.innerHTML='<div class="hist-empty">Score não disponível.</div>';return;}
+  } catch(e) { console.log('score load error',e); }
   const pct=scorePct(sd.score);
   const statusTxt=sd.score>=9?'Excelência — 20%':sd.score>=8?'Consistente — 15%':sd.score>=7?'Elegível — 10%':sd.score>=6?'Suspenso':'Sem comissão';
   const sc=sd.score>=7?'var(--green)':sd.score>=6?'var(--amber)':'var(--danger)';
-  const pilares=['Qualidade Estratégica','Eficiência Operacional','Rentabilidade','Relação c/ Cliente'];
-  const pesos=['30%','25%','25%','20%'];
   const totalAcc=(hist[me.name]||[]).reduce((s,e)=>s+e.acc,0);
   el.innerHTML=`
     <div class="score-card">
@@ -927,7 +920,7 @@ async function renderScore(){
         <div>
           <div style="font-size:52px;font-weight:900;line-height:1;color:${sc}">${sd.score.toFixed(1)}</div>
           <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:${sc};margin-top:4px">${statusTxt}</div>
-          <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Score · Abril 2026 · compilado por Julia</div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:2px">Score compilado por Julia · atualizado pelo ADM</div>
         </div>
         ${totalAcc>0?`<div style="text-align:right"><div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px">Total comissões lançadas</div><div style="font-size:22px;font-weight:900;color:var(--green)">${brl(totalAcc)}</div></div>`:''}
       </div>
@@ -939,7 +932,7 @@ async function renderScore(){
         :`<div class="comissao-box"><div><div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--green);margin-bottom:3px">% comissão sobre extras</div><div style="font-size:11px;color:var(--green)">Score ${sd.score.toFixed(1)} → ${Math.round(pct*100)}% da base</div></div><div style="font-size:26px;font-weight:900;color:var(--green)">${Math.round(pct*100)}%</div></div>`
       }
     </div>
-    <div class="score-tabela">
+    <div class="score-tabela" style="margin-top:12px">
       <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--text-muted);margin-bottom:10px;font-weight:700">Tabela de referência</div>
       ${[['< 6,0',0,6,'var(--danger)'],['6,0 – 6,9',6,7,'var(--text-muted)'],['7,0 – 7,9',7,8,'var(--amber)'],['8,0 – 8,9',8,9,'var(--amber)'],['9,0 – 10',9,11,'var(--green)']].map(r=>{
         const hl=sd.score>=r[1]&&sd.score<r[2];
